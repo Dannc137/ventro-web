@@ -9,6 +9,7 @@ import { getErrorMessage, getFieldErrors } from "@/lib/api-client";
 import { useAuth } from "../auth-context";
 import { AuthLayout } from "../components/auth-layout";
 import { registerSchema, type RegisterValues } from "../schemas";
+import { PasswordInput } from "@/components/shared/password-input";
 
 export function RegisterPage() {
   const { register: registerUser } = useAuth();
@@ -85,9 +86,8 @@ export function RegisterPage() {
 
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="new-password"
             aria-invalid={!!errors.password}
             {...register("password")}
@@ -101,9 +101,8 @@ export function RegisterPage() {
 
         <div className="space-y-1.5">
           <Label htmlFor="confirmPassword">Confirm password</Label>
-          <Input
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             autoComplete="new-password"
             aria-invalid={!!errors.confirmPassword}
             {...register("confirmPassword")}
@@ -120,7 +119,7 @@ export function RegisterPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <p className="mt-4 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link to="/login" className="font-medium text-primary hover:text-primary-hover">
           Sign in

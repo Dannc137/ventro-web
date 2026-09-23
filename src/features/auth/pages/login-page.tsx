@@ -9,6 +9,7 @@ import { getErrorMessage } from "@/lib/api-client";
 import { useAuth } from "../auth-context";
 import { AuthLayout } from "../components/auth-layout";
 import { loginSchema, type LoginValues } from "../schemas";
+import { PasswordInput } from "@/components/shared/password-input";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -32,7 +33,7 @@ export function LoginPage() {
   }
 
   return (
-    <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue.">
+    <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue." >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
         {formError && (
           <p
@@ -60,9 +61,8 @@ export function LoginPage() {
 
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             autoComplete="current-password"
             aria-invalid={!!errors.password}
             {...register("password")}
@@ -77,7 +77,7 @@ export function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <p className="mt-4 text-center text-sm text-muted-foreground">
         New here?{" "}
         <Link to="/register" className="font-medium text-primary hover:text-primary-hover">
           Create an account
