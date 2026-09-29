@@ -62,7 +62,7 @@ export function AppShell() {
         </header>
 
         <main className="px-4 py-6 md:px-8 md:py-8">
-          <div className="max-w-[1200px]">
+          <div className="max-w-[1400px]">
             <Outlet />
           </div>
         </main>
