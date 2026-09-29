@@ -13,23 +13,28 @@ type State = "verifying" | "done" | "failed";
 
 export function VerifyEmailPage() {
   const { token = "" } = useParams();
-  const { status } = useAuth();
+  const { status, refreshUser } = useAuth();
 
   const [state, setState] = useState<State>("verifying");
   const [error, setError] = useState<string | null>(null);
   const attempted = useRef(false);
 
-  useEffect(() => {
+    useEffect(() => {
     if (attempted.current || !token) return;
+    if (status === "loading") return;
+
     attempted.current = true;
 
     verifyEmail(token)
-      .then(() => setState("done"))
+      .then(() => {
+        setState("done");
+        if (status === "authenticated") void refreshUser();
+      })
       .catch((err) => {
         setError(getErrorMessage(err));
         setState("failed");
       });
-  }, [token]);
+  }, [token, status, refreshUser]);
 
   return (
     <PublicLayout>

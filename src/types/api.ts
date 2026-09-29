@@ -11,6 +11,7 @@ export type UserSummary = {
   fullName: string;
   email: string;
   emailVerified: boolean;
+  createdAt: string;
 };
 
 export type AuthResponse = {

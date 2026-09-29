@@ -77,7 +77,6 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
                     <Plus className="size-4" />
                     New event
                 </button>
-            </nav>
             <NavLink
                 to="/events"
                 end
@@ -94,6 +93,7 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
             >
                 All events
             </NavLink>
+            </nav>
 
             <div className="mt-auto flex items-center gap-2.5 border-t px-3 py-3">
                 <UserAvatar name={user?.fullName ?? ""} />
