@@ -37,7 +37,7 @@ export function formatCountdown(days: number): string {
   if (days === 0) return "Today";
   if (days === 1) return "Tomorrow";
   if (days === -1) return "Yesterday";
-  if (days > 0) return `In ${days} days`;
+  if (days > 0) return `${days} days out`;
   return `${Math.abs(days)} days ago`;
 }
 
@@ -50,4 +50,26 @@ export function formatMoney(amount: number | string): string {
     currency: "NGN",
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+/** "2 min ago", "3 hours ago", "yesterday" */
+export function formatRelativeTime(iso: string): string {
+  const diffSeconds = Math.round((new Date(iso).getTime() - Date.now()) / 1000);
+
+  const units: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 31_536_000],
+    ["month", 2_592_000],
+    ["day", 86_400],
+    ["hour", 3_600],
+    ["minute", 60],
+  ];
+
+  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
+  for (const [unit, seconds] of units) {
+    if (Math.abs(diffSeconds) >= seconds) {
+      return rtf.format(Math.round(diffSeconds / seconds), unit);
+    }
+  }
+  return "just now";
 }

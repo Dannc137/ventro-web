@@ -1,25 +1,17 @@
-import { Navigate, Outlet, useLocation, type Location } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 import { AppShellSkeleton } from "@/components/shared/app-shell-skeleton";
 import { AuthPageSkeleton } from "@/components/shared/auth-page-skeleton";
 import { useAuth } from "./auth-context";
 
-const DEFAULT_REDIRECT = "/events";
-
-function redirectTarget(location: Location): string {
-  const state = location.state as { from?: string } | null;
-  return state?.from ?? DEFAULT_REDIRECT;
-}
-
 export function ProtectedRoute() {
   const { status } = useAuth();
-  const location = useLocation();
 
   if (status === "loading") {
     return <AppShellSkeleton />;
   }
 
   if (status === "anonymous") {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;
@@ -34,7 +26,10 @@ export function PublicOnlyRoute() {
   }
 
   if (status === "authenticated") {
-    return <Navigate to={redirectTarget(location)} replace />;
+    const state = location.state as { inviteToken?: string } | null;
+    const token = state?.inviteToken;
+
+    return <Navigate to={token ? `/invite/${token}` : "/events"} replace />;
   }
 
   return <Outlet />;

@@ -1,6 +1,7 @@
 import { isRouteErrorResponse, Link, useRouteError } from "react-router";
 import { Button } from "@/components/ui/button";
 import { NotFoundPage } from "./not-found-page";
+import * as Sentry from "@sentry/react";
 
 export function RouteErrorPage() {
   const error = useRouteError();
@@ -10,6 +11,7 @@ export function RouteErrorPage() {
   }
 
   console.error(error);
+  Sentry.captureException(error);
 
   return (
     <main className="flex min-h-svh flex-col items-center justify-center px-4 text-center">

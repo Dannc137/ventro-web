@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,8 @@ import { PasswordInput } from "@/components/shared/password-input";
 export function LoginPage() {
   const { login } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
+  const location = useLocation();
+
 
   const {
     register,
@@ -79,7 +81,7 @@ export function LoginPage() {
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
         New here?{" "}
-        <Link to="/register" className="font-medium text-primary hover:text-primary-hover">
+        <Link to="/register" state={location.state} className="font-medium text-primary hover:text-primary-hover">
           Create an account
         </Link>
       </p>

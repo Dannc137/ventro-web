@@ -5,6 +5,7 @@ import type { UserSummary } from "@/types/api";
 import { AuthContext, type AuthStatus } from "./auth-context";
 import * as authApi from "./api";
 import type { LoginRequest, RegisterRequest } from "./types";
+import * as Sentry from "@sentry/react";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
@@ -15,6 +16,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setStatus("anonymous");
     queryClient.clear();
+    Sentry.setUser(null);
   }, [queryClient]);
 
   // Let the API client tell us when the session truly ends
@@ -32,10 +34,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
         setUser(session.user);
         setStatus("authenticated");
+        Sentry.setUser({ id: session.user.id });
       })
       .catch(() => {
         if (cancelled) return;
         setStatus("anonymous");
+        Sentry.setUser(null);
       });
 
     return () => {
@@ -47,12 +51,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const session = await authApi.login(body);
     setUser(session.user);
     setStatus("authenticated");
+    Sentry.setUser({ id: session.user.id });
   }, []);
 
   const register = useCallback(async (body: RegisterRequest) => {
     const session = await authApi.register(body);
     setUser(session.user);
     setStatus("authenticated");
+    Sentry.setUser({ id: session.user.id });
   }, []);
 
   const logout = useCallback(async () => {
@@ -60,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authApi.logout();
     } finally {
       clearSession();
+      window.location.replace("/login");
     }
   }, [clearSession]);
 
