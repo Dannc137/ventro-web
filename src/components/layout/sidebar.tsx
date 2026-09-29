@@ -23,7 +23,7 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
     return (
         <div className="flex h-full flex-col bg-card">
             <div className="px-5 py-5">
-                <span className="text-lg font-semibold">Ventro</span>
+                <span className="text-lg font-semibold tracking-tight">Ventro</span>
             </div>
 
             <nav className="flex-1 overflow-y-auto px-3">
@@ -78,6 +78,22 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
                     New event
                 </button>
             </nav>
+            <NavLink
+                to="/events"
+                end
+                onClick={onNavigate}
+                className={({ isActive }) =>
+                    cn(
+                        "mt-1 block rounded-md px-2.5 py-2 text-sm transition-colors",
+                        "focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none",
+                        isActive
+                            ? "bg-primary-tint font-medium text-primary-strong"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    )
+                }
+            >
+                All events
+            </NavLink>
 
             <div className="mt-auto flex items-center gap-2.5 border-t px-3 py-3">
                 <UserAvatar name={user?.fullName ?? ""} />

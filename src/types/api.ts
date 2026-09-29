@@ -10,6 +10,7 @@ export type UserSummary = {
   id: string;
   fullName: string;
   email: string;
+  emailVerified: boolean;
 };
 
 export type AuthResponse = {

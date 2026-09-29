@@ -5,16 +5,18 @@ import { Link, useLocation } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getErrorMessage } from "@/lib/api-client";
+import { getErrorMessage, isRateLimited } from "@/lib/api-client";
 import { useAuth } from "../auth-context";
 import { AuthLayout } from "../components/auth-layout";
 import { loginSchema, type LoginValues } from "../schemas";
 import { PasswordInput } from "@/components/shared/password-input";
+import { FormAlert } from "@/components/shared/form-alert";
 
 export function LoginPage() {
   const { login } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
   const location = useLocation();
+  const [rateLimited, setRateLimited] = useState(false);
 
 
   const {
@@ -27,9 +29,12 @@ export function LoginPage() {
 
   async function onSubmit(values: LoginValues) {
     setFormError(null);
+    setRateLimited(false);
+
     try {
       await login(values);
     } catch (error) {
+      setRateLimited(isRateLimited(error));
       setFormError(getErrorMessage(error));
     }
   }
@@ -37,14 +42,21 @@ export function LoginPage() {
   return (
     <AuthLayout title="Welcome back" subtitle="Sign in to your account to continue." >
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-        {formError && (
-          <p
-            role="alert"
-            className="rounded-md bg-destructive-tint px-3 py-2 text-sm text-destructive-strong"
-          >
-            {formError}
-          </p>
-        )}
+        {formError &&
+          (rateLimited ? (
+            <FormAlert title="Too many sign-in attempts" tone="warning">
+              Wait a few minutes, or{" "}
+              <Link
+                to="/forgot-password"
+                className="font-medium text-primary hover:text-primary-hover"
+              >
+                reset your password
+              </Link>
+              .
+            </FormAlert>
+          ) : (
+            <FormAlert title={formError} />
+          ))}
 
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
@@ -62,7 +74,15 @@ export function LoginPage() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
+          <div className="flex items-baseline justify-between gap-3">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              to="/forgot-password"
+              className="rounded-md text-xs text-primary transition-colors hover:text-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <PasswordInput
             id="password"
             autoComplete="current-password"

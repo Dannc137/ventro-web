@@ -115,3 +115,7 @@ export function getFieldErrors(error: unknown): Record<string, string> {
   }
   return {};
 }
+
+export function isRateLimited(error: unknown): boolean {
+  return axios.isAxiosError(error) && error.response?.status === 429;
+}

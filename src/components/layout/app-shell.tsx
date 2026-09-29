@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router";
 import { Menu, X } from "lucide-react";
 import { CreateEventDialog } from "@/features/events/components/create-event-dialog";
+import { VerifyEmailBanner } from "@/components/shared/verify-email-banner";
 import { Sidebar } from "./sidebar";
 
 export function AppShell() {
@@ -46,6 +47,8 @@ export function AppShell() {
       )}
 
       <div className="md:pl-60">
+        <VerifyEmailBanner />
+
         <header className="flex h-14 items-center gap-3 border-b bg-card px-4 md:hidden">
           <button
             type="button"

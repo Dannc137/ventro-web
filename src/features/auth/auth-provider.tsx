@@ -61,6 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Sentry.setUser({ id: session.user.id });
   }, []);
 
+    const refreshUser = useCallback(async () => {
+    try {
+      const fresh = await authApi.fetchMe();
+      setUser(fresh);
+    } catch {
+      // Not critical — the next page load picks it up.
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await authApi.logout();
@@ -71,8 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [clearSession]);
 
   const value = useMemo(
-    () => ({ status, user, login, register, logout }),
-    [status, user, login, register, logout],
+    () => ({ status, user, login, register, logout, refreshUser }),
+    [status, user, login, register, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
