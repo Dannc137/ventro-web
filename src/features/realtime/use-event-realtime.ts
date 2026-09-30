@@ -21,6 +21,7 @@ export function useEventRealtime(eventId: string | undefined) {
 
       switch (message.area) {
         case "comment-added": {
+            console.log("[rt] comment pushed", message.comment);
           const c = message.comment as CommentBroadcast | undefined;
           if (!c) break;
 
