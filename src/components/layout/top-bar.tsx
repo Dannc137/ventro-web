@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router";
 import { Menu } from "lucide-react";
 import { NotificationBell } from "@/features/notifications/components/notification-bell";
+import { ThemeToggle } from "../shared/theme-toggle"; 
 import { useCurrentEvent } from "@/features/events/hooks";
 import { can, type Permission } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
@@ -71,6 +72,7 @@ export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
             All events
           </Link>
         )}
+        <ThemeToggle />
         <NotificationBell />
       </div>
     </header>

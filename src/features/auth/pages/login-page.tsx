@@ -11,12 +11,14 @@ import { AuthLayout } from "../components/auth-layout";
 import { loginSchema, type LoginValues } from "../schemas";
 import { PasswordInput } from "@/components/shared/password-input";
 import { FormAlert } from "@/components/shared/form-alert";
+// import { useForceLight } from "@/hooks/use-force-light";
 
 export function LoginPage() {
   const { login } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
   const location = useLocation();
   const [rateLimited, setRateLimited] = useState(false);
+  // useForceLight();
 
 
   const {

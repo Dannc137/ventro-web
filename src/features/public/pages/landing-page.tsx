@@ -10,6 +10,7 @@ import {
   DashboardMockup,
   RescheduleMockup,
 } from "../components/landing-mockups";
+import { useForceLight } from "@/hooks/use-force-light";
 
 const PROBLEMS = [
   {
@@ -46,6 +47,7 @@ const STEPS = [
 
 export function LandingPage() {
   const { status } = useAuth();
+  useForceLight();
 
   if (status === "authenticated") {
     return <Navigate to="/events" replace />;

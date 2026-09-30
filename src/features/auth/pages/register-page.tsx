@@ -11,12 +11,14 @@ import { registerSchema, type RegisterValues } from "../schemas";
 import { PasswordInput } from "@/components/shared/password-input";
 import { getErrorMessage, getFieldErrors, isRateLimited } from "@/lib/api-client";
 import { FormAlert } from "@/components/shared/form-alert";
+// import { useForceLight } from "@/hooks/use-force-light";
 
 export function RegisterPage() {
     const { register: registerUser } = useAuth();
     const [formError, setFormError] = useState<string | null>(null);
     const [rateLimited, setRateLimited] = useState(false);
     const location = useLocation();
+    // useForceLight();
 
     const {
         register,

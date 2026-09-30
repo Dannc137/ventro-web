@@ -8,12 +8,14 @@ import { PublicLayout } from "@/components/layout/public-layout";
 import { getErrorMessage } from "@/lib/api-client";
 import { useAuth } from "../auth-context";
 import { verifyEmail } from "../api";
+// import { useForceLight } from "@/hooks/use-force-light";
 
 type State = "verifying" | "done" | "failed";
 
 export function VerifyEmailPage() {
   const { token = "" } = useParams();
   const { status, refreshUser } = useAuth();
+  // useForceLight();
 
   const [state, setState] = useState<State>("verifying");
   const [error, setError] = useState<string | null>(null);

@@ -11,11 +11,13 @@ import { AuthLayout } from "../components/auth-layout";
 import { resetPassword } from "../api";
 import { resetPasswordSchema, type ResetPasswordValues } from "../schemas";
 import { FormAlert } from "@/components/shared/form-alert";
+// import { useForceLight } from "@/hooks/use-force-light";
 
 export function ResetPasswordPage() {
   const { token = "" } = useParams();
   const navigate = useNavigate();
   const [formError, setFormError] = useState<string | null>(null);
+  // useForceLight();
 
   const {
     register,

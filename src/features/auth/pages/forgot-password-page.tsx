@@ -9,6 +9,7 @@ import { getErrorMessage } from "@/lib/api-client";
 import { AuthLayout } from "../components/auth-layout";
 import { forgotPassword } from "../api";
 import { forgotPasswordSchema, type ForgotPasswordValues } from "../schemas";
+// import { useForceLight } from "@/hooks/use-force-light";
 
 const FIRST_COOLDOWN = 30;
 const MAX_ATTEMPTS = 4;
@@ -18,6 +19,7 @@ export function ForgotPasswordPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [cooldown, setCooldown] = useState(0);
   const [attempts, setAttempts] = useState(0);
+  // useForceLight();
 
   const {
     register,
