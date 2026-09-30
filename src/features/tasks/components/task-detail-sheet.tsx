@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import type { EventDetail } from "@/features/events/types";
 import { useMembers } from "@/features/members/hooks";
 import { useDeleteTask, useUpdateTask } from "../hooks";
 import type { TaskStatus, TaskView } from "../types";
+import { useMarkCommentsRead, useComments } from "@/features/comments/hooks";
 
 const STATUSES: { value: TaskStatus; label: string }[] = [
     { value: "TODO", label: "To do" },
@@ -88,6 +89,16 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
             onError: (error) => toast.error(getErrorMessage(error)),
         });
     }
+
+    const markRead = useMarkCommentsRead(eventId);
+
+    const comments = useComments(eventId, "TASK", task.id);
+
+    useEffect(() => {
+        if (comments.data && comments.data.length > 0) {
+            markRead.mutate({ entityType: "TASK", entityId: task.id });
+        }
+    }, [comments.data?.length]);
 
     return (
         <>

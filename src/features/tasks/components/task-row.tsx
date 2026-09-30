@@ -1,4 +1,4 @@
-import { Link2, Pin } from "lucide-react";
+import { Link2, MessageSquare, Pin } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { formatDate } from "@/lib/format";
@@ -77,6 +77,16 @@ export function TaskRow({ task, canEdit, onToggle, onOpen }: TaskRowProps) {
                 >
                     <Link2 className="size-3.5" />
                     {task.blockingCount}
+                </span>
+            )}
+
+            {task.unreadComments > 0 && (
+                <span
+                    className="flex shrink-0 items-center gap-1 rounded-full bg-primary-tint px-1.5 py-0.5 text-xs font-medium text-primary-strong tabular-nums"
+                    title={`${task.unreadComments} new comments`}
+                >
+                    <MessageSquare className="size-3" />
+                    {task.unreadComments}
                 </span>
             )}
 

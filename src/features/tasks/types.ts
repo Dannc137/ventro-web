@@ -18,6 +18,7 @@ export type TaskView = {
   blockedByCount: number;
   blockingCount: number;
   assignee: AssigneeSummary | null;
+  unreadComments: number;
 };
 
 export type TaskBucket = {

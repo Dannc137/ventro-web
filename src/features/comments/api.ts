@@ -23,3 +23,13 @@ export async function createComment(
 export async function deleteComment(eventId: string, commentId: string): Promise<void> {
   await api.delete(`/events/${eventId}/comments/${commentId}`);
 }
+
+export async function markCommentsRead(
+  eventId: string,
+  entityType: CommentableType,
+  entityId: string,
+): Promise<void> {
+  await api.post(`/events/${eventId}/comments/read`, null, {
+    params: { entityType, entityId },
+  });
+}

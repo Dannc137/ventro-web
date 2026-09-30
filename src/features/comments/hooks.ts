@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
-import { createComment, deleteComment, fetchComments } from "./api";
+import { createComment, deleteComment, fetchComments, markCommentsRead } from "./api";
 import type { CommentableType, CreateCommentRequest } from "./types";
 
 export function useComments(
@@ -38,6 +38,23 @@ export function useDeleteComment(eventId: string, entityType: CommentableType, e
       queryClient.invalidateQueries({
         queryKey: queryKeys.comments(entityType, entityId),
       });
+    },
+  });
+}
+
+export function useMarkCommentsRead(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      entityType,
+      entityId,
+    }: {
+      entityType: CommentableType;
+      entityId: string;
+    }) => markCommentsRead(eventId, entityType, entityId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks(eventId) });
     },
   });
 }
