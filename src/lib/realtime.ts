@@ -21,7 +21,7 @@ function socketUrl(): string {
 function ensureClient(): Client {
   if (client) return client;
 
-  console.log("[rt] creating client, url:", socketUrl());
+//   console.log("[rt] creating client, url:", socketUrl());
 
   client = new Client({
     webSocketFactory: () => new SockJS(socketUrl()),
@@ -32,12 +32,12 @@ function ensureClient(): Client {
 
     beforeConnect: () => {
       const token = getAccessToken();
-      console.log("[rt] connecting, token present:", Boolean(token));
+    //   console.log("[rt] connecting, token present:", Boolean(token));
       client!.connectHeaders = token ? { Authorization: `Bearer ${token}` } : {};
     },
 
     onConnect: () => {
-      console.log("[rt] CONNECTED. pending destinations:", [...handlers.keys()]);
+    //   console.log("[rt] CONNECTED. pending destinations:", [...handlers.keys()]);
       for (const destination of handlers.keys()) {
         subscribeRaw(destination);
       }
@@ -58,18 +58,18 @@ function ensureClient(): Client {
 
 function subscribeRaw(destination: string) {
   if (!client?.connected) {
-    console.log("[rt] not connected yet, deferring:", destination);
+    // console.log("[rt] not connected yet, deferring:", destination);
     return;
   }
   if (subscriptions.has(destination)) {
-    console.log("[rt] already subscribed:", destination);
+    // console.log("[rt] already subscribed:", destination);
     return;
   }
 
-  console.log("[rt] SUBSCRIBE ->", destination);
+//   console.log("[rt] SUBSCRIBE ->", destination);
 
   const sub = client.subscribe(destination, (frame: IMessage) => {
-    console.log("[rt] MESSAGE on", destination, frame.body);
+    // console.log("[rt] MESSAGE on", destination, frame.body);
     try {
       const message = JSON.parse(frame.body) as RealtimeMessage;
       handlers.get(destination)?.forEach((handler) => handler(message));
@@ -82,7 +82,7 @@ function subscribeRaw(destination: string) {
 }
 
 export function subscribe(destination: string, handler: Handler): () => void {
-  console.log("[rt] subscribe() called for", destination);
+//   console.log("[rt] subscribe() called for", destination);
   ensureClient();
 
   if (!handlers.has(destination)) handlers.set(destination, new Set());
@@ -97,7 +97,7 @@ export function subscribe(destination: string, handler: Handler): () => void {
     if (set && set.size === 0) {
       setTimeout(() => {
         if (handlers.get(destination)?.size === 0) {
-          console.log("[rt] tearing down", destination);
+        //   console.log("[rt] tearing down", destination);
           handlers.delete(destination);
           subscriptions.get(destination)?.unsubscribe();
           subscriptions.delete(destination);
@@ -108,7 +108,7 @@ export function subscribe(destination: string, handler: Handler): () => void {
 }
 
 export function disconnectRealtime() {
-  console.log("[rt] disconnecting");
+//   console.log("[rt] disconnecting");
   subscriptions.forEach((sub) => sub.unsubscribe());
   subscriptions.clear();
   handlers.clear();
