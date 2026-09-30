@@ -32,7 +32,7 @@ export function BudgetPage() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editing, setEditing] = useState<BudgetItemView | null>(null);
 
-    const canEdit = can(event?.permissions, "EDIT_BUDGET");
+    const canEdit = can(event, "EDIT_BUDGET");
 
     function openCreate() {
         setEditing(null);

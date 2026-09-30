@@ -8,29 +8,32 @@ import { Label } from "@/components/ui/label";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatRelativeTime } from "@/lib/format";
-import { can, type Permission } from "@/lib/permissions";
+import { can } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import { useComments, useCreateComment, useDeleteComment } from "../hooks";
 import type { CommentableType } from "../types";
 import type React from "react";
+import type { EventDetail } from "@/features/events/types";
 
 type CommentThreadProps = {
     eventId: string;
     entityType: CommentableType;
     entityId: string;
-    permissions: Permission[] | undefined;
+    event: EventDetail | undefined;
 };
 
-export function CommentThread({ eventId, entityType, entityId, permissions }: CommentThreadProps) {
+export function CommentThread({ eventId, entityType, entityId, event }: CommentThreadProps) {
     const comments = useComments(eventId, entityType, entityId);
     const createComment = useCreateComment(eventId);
     const deleteComment = useDeleteComment(eventId, entityType, entityId);
 
+    const isCancelled = event?.status === "CANCELLED";
+
     const [body, setBody] = useState("");
     const [internal, setInternal] = useState(false);
 
-    const canPostInternal = can(permissions, "VIEW_INTERNAL");
-    const canModerate = can(permissions, "MANAGE_MEMBERS");
+    const canPostInternal = can(event, "VIEW_INTERNAL");
+    const canModerate = can(event, "MANAGE_MEMBERS");
 
     async function handleSubmit() {
         const trimmed = body.trim();
@@ -112,33 +115,39 @@ export function CommentThread({ eventId, entityType, entityId, permissions }: Co
                 ))}
             </ul>
 
-            <div className="mt-4 space-y-2">
-                <Textarea
-                    value={body}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
-                    placeholder="Add a comment"
-                    rows={3}
-                />
-                <div className="flex items-center justify-between gap-3">
-                    {canPostInternal ? (
-                        <div className="flex items-center gap-2">
-                            <Switch id="internal" checked={internal} onCheckedChange={setInternal} />
-                            <Label htmlFor="internal" className="text-xs text-muted-foreground">
-                                Internal only
-                            </Label>
-                        </div>
-                    ) : (
-                        <span />
-                    )}
-                    <Button
-                        size="sm"
-                        onClick={handleSubmit}
-                        disabled={!body.trim() || createComment.isPending}
-                    >
-                        {createComment.isPending ? "Posting…" : "Comment"}
-                    </Button>
+            {isCancelled ? (
+                <p className="mt-4 rounded-md bg-muted px-3 py-2.5 text-sm text-muted-foreground">
+                    This event was cancelled, so comments are closed.
+                </p>
+            ) : (
+                <div className="mt-4 space-y-2">
+                    <Textarea
+                        value={body}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
+                        placeholder="Add a comment"
+                        rows={3}
+                    />
+                    <div className="flex items-center justify-between gap-3">
+                        {canPostInternal ? (
+                            <div className="flex items-center gap-2">
+                                <Switch id="internal" checked={internal} onCheckedChange={setInternal} />
+                                <Label htmlFor="internal" className="text-xs text-muted-foreground">
+                                    Internal only
+                                </Label>
+                            </div>
+                        ) : (
+                            <span />
+                        )}
+                        <Button
+                            size="sm"
+                            onClick={handleSubmit}
+                            disabled={!body.trim() || createComment.isPending}
+                        >
+                            {createComment.isPending ? "Posting…" : "Comment"}
+                        </Button>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

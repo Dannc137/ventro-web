@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
 import { useParams } from "react-router";
-import { changeEventDate, createEvent, deleteEvent, disableSharing, enableSharing, fetchEvent, fetchEvents, setEventArchived, updateEvent } from "./api";
+import { cancelEvent, changeEventDate, createEvent, deleteEvent, disableSharing, enableSharing, fetchEvent, fetchEvents, setEventArchived, uncancelEvent, updateEvent } from "./api";
 import type { UpdateEventRequest } from "./types";
 
 export function useEvents() {
@@ -99,3 +99,26 @@ export function useDisableSharing(eventId: string) {
   });
 }
 
+export function useCancelEvent(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (reason: string | null) => cancelEvent(eventId, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.events.detail(eventId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.events.all });
+    },
+  });
+}
+
+export function useUncancelEvent(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => uncancelEvent(eventId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.events.detail(eventId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.events.all });
+    },
+  });
+}

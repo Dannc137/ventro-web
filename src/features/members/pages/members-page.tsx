@@ -48,7 +48,7 @@ export function MembersPage() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [removing, setRemoving] = useState<MemberView | null>(null);
 
-  const canManage = can(event?.permissions, "MANAGE_MEMBERS");
+  const canManage = can(event, "MANAGE_MEMBERS");
 
   function handleRoleChange(member: MemberView, role: EventRole) {
     changeRole.mutate(

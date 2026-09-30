@@ -36,7 +36,7 @@ export function TasksPage() {
     const [search, setSearch] = useState("");
 
     const { user } = useAuth();
-    const canEdit = can(event?.permissions, "EDIT_TASKS");
+    const canEdit = can(event, "EDIT_TASKS");
 
     const [searchParams] = useSearchParams();
 

@@ -9,6 +9,7 @@ import { can } from "@/lib/permissions";
 import { ShareClientDialog } from "./share-client-dialog";
 import { useEvent } from "../hooks";
 import { useEventRealtime } from "@/features/realtime/use-event-realtime";
+import { CancelledBanner } from "./cancelled-banner";
 
 export function EventLayout() {
   const { eventId = "" } = useParams();
@@ -39,6 +40,11 @@ export function EventLayout() {
 
   return (
     <>
+      {event?.status === "CANCELLED" && (
+        <div className="mb-6">
+          <CancelledBanner event={event} />
+        </div>
+      )}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           {isLoading ? (
@@ -64,7 +70,7 @@ export function EventLayout() {
             <p className="text-base font-semibold tabular-nums">
               {formatCountdown(event.daysUntil)}
             </p>
-            {can(event.permissions, "EDIT_EVENT") && (
+            {can(event, "EDIT_EVENT") && (
               <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
                 Share client view
               </Button>

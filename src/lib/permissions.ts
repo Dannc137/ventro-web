@@ -13,9 +13,22 @@ export type Permission =
   | "MANAGE_MEMBERS"
   | "VIEW_INTERNAL";
 
+const WRITE_PERMISSIONS: Permission[] = [
+  "EDIT_EVENT",
+  "EDIT_TASKS",
+  "EDIT_OWN_TASKS",
+  "EDIT_BUDGET",
+  "EDIT_MONEY",
+  "MANAGE_MEMBERS",
+];
+
 export function can(
-  permissions: Permission[] | undefined,
+  event: { permissions?: Permission[]; status?: string } | undefined,
   permission: Permission,
 ): boolean {
-  return permissions?.includes(permission) ?? false;
+  if (!event?.permissions?.includes(permission)) return false;
+  if (event.status === "CANCELLED" && WRITE_PERMISSIONS.includes(permission)) {
+    return false;
+  }
+  return true;
 }

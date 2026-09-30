@@ -33,8 +33,9 @@ export function EventSettingsPage() {
   const [dateOpen, setDateOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
-  const canDelete = can(event?.permissions, "DELETE_EVENT");
+  const canDelete = can(event, "DELETE_EVENT");
   const isArchived = event?.status === "ARCHIVED";
 
   const {
@@ -141,6 +142,23 @@ export function EventSettingsPage() {
           </Button>
         </section>
       )}
+
+      {event.myRole === "OWNER" && event.status !== "CANCELLED" && (
+  <section className="rounded-lg border p-5">
+    <h2 className="text-[15px] font-semibold">Cancel this event</h2>
+    <p className="mt-1 text-sm text-foreground-soft">
+      Tells everyone by email and makes the event read-only. You can reinstate it
+      later.
+    </p>
+    <Button
+      variant="outline"
+      className="mt-4"
+      onClick={() => setCancelOpen(true)}
+    >
+      Cancel event
+    </Button>
+  </section>
+)}
 
       {canDelete && (
         <section className="rounded-lg border border-destructive/30 bg-card p-5">

@@ -54,3 +54,18 @@ export async function enableSharing(eventId: string): Promise<{ token: string }>
 export async function disableSharing(eventId: string): Promise<void> {
   await api.delete(`/events/${eventId}/share`);
 }
+
+export async function cancelEvent(
+  eventId: string,
+  reason: string | null,
+): Promise<EventDetail> {
+  const { data } = await api.post<EventDetail>(`/events/${eventId}/cancel`, {
+    reason,
+  });
+  return data;
+}
+
+export async function uncancelEvent(eventId: string): Promise<EventDetail> {
+  const { data } = await api.post<EventDetail>(`/events/${eventId}/uncancel`);
+  return data;
+}

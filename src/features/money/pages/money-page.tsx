@@ -47,7 +47,7 @@ export function MoneyPage() {
         payment: PaymentView;
     } | null>(null);
 
-    const canEdit = can(event?.permissions, "EDIT_MONEY");
+    const canEdit = can(event, "EDIT_MONEY");
 
     function handleDelete(contribution: ContributionView) {
         deleteContribution.mutate(contribution.id, {

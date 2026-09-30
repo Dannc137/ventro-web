@@ -24,7 +24,7 @@ const TABS: {
 export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
   const event = useCurrentEvent();
   const tabs = event
-    ? TABS.filter((tab) => can(event.permissions, tab.permission))
+    ? TABS.filter((tab) => can(event, tab.permission))
     : [];
 
   return (

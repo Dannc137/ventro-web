@@ -68,7 +68,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
 
     const [title, setTitle] = useState(task.title);
 
-    const canEdit = can(event?.permissions, "EDIT_TASKS");
+    const canEdit = can(event, "EDIT_TASKS");
     const daysBeforeEvent = event
         ? daysUntil(task.dueDate) - daysUntil(event.eventDate)
         : 0;
@@ -233,7 +233,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                         eventId={eventId}
                         entityType="TASK"
                         entityId={task.id}
-                        permissions={event?.permissions}
+                        event={event}
                     />
                 </div>
 
