@@ -66,7 +66,7 @@ export function LoginPage() {
             id="email"
             type="email"
             autoComplete="email"
-            placeholder="ada@example.com"
+            placeholder="ada@gmail.com"
             aria-invalid={!!errors.email}
             {...register("email")}
           />

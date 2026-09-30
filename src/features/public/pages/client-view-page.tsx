@@ -7,8 +7,10 @@ import { formatCountdown, formatDate, formatLongDate, formatMoney } from "@/lib/
 import { cn } from "@/lib/utils";
 import { useClientView } from "../hooks";
 import type { Milestone } from "../types";
+import { useForceLight } from "@/hooks/use-force-light";
 
 export function ClientViewPage() {
+  useForceLight()
   const { token = "" } = useParams();
   const view = useClientView(token);
 
