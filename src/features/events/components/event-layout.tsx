@@ -8,12 +8,14 @@ import { formatCountdown, formatLongDate } from "@/lib/format";
 import { can } from "@/lib/permissions";
 import { ShareClientDialog } from "./share-client-dialog";
 import { useEvent } from "../hooks";
+import { useEventRealtime } from "@/features/realtime/use-event-realtime";
 
 export function EventLayout() {
   const { eventId = "" } = useParams();
   const { data: event, isLoading, isError, error } = useEvent(eventId);
 
   const [shareOpen, setShareOpen] = useState(false);
+  useEventRealtime(eventId);
 
   if (isError) {
     const notFound = axios.isAxiosError(error) && error.response?.status === 404;

@@ -10,7 +10,6 @@ export function useNotifications() {
   return useQuery({
     queryKey: queryKeys.notifications,
     queryFn: () => fetchNotifications(20),
-    refetchInterval: 60_000,
     refetchOnWindowFocus: true,
   });
 }

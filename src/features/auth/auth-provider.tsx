@@ -6,6 +6,7 @@ import { AuthContext, type AuthStatus } from "./auth-context";
 import * as authApi from "./api";
 import type { LoginRequest, RegisterRequest } from "./types";
 import * as Sentry from "@sentry/react";
+import { disconnectRealtime } from "@/lib/realtime";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
@@ -17,6 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus("anonymous");
     queryClient.clear();
     Sentry.setUser(null);
+    disconnectRealtime();
   }, [queryClient]);
 
   // Let the API client tell us when the session truly ends

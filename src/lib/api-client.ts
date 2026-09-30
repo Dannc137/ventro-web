@@ -39,20 +39,23 @@ api.interceptors.request.use((config) => {
 let refreshPromise: Promise<AuthResponse> | null = null;
 
 export function refreshSession(): Promise<AuthResponse> {
-  if (!refreshPromise) {
-    refreshPromise = api
-      .post<AuthResponse>("/auth/refresh")
-      .then((res) => {
-        setAccessToken(res.data.accessToken);
-        return res.data;
-      })
-      .finally(() => {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = api
+    .post<AuthResponse>("/auth/refresh")
+    .then((res) => {
+      setAccessToken(res.data.accessToken);
+      return res.data;
+    })
+    .finally(() => {
+      // Let everyone currently awaiting this promise resolve first.
+      setTimeout(() => {
         refreshPromise = null;
-      });
-  }
+      }, 0);
+    });
+
   return refreshPromise;
 }
-
 // ---------- retry once after a 401 ----------
 
 type RetriableConfig = InternalAxiosRequestConfig & { _retried?: boolean };
@@ -118,4 +121,8 @@ export function getFieldErrors(error: unknown): Record<string, string> {
 
 export function isRateLimited(error: unknown): boolean {
   return axios.isAxiosError(error) && error.response?.status === 429;
+}
+
+export function getAccessToken(): string | null {
+  return accessToken;
 }

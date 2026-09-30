@@ -5,10 +5,12 @@ import { CreateEventDialog } from "@/features/events/components/create-event-dia
 import { VerifyEmailBanner } from "@/components/shared/verify-email-banner";
 import { Sidebar } from "./sidebar";
 import { TopBar } from "./top-bar";
+import { useNotificationRealtime } from "@/features/realtime/use-notification-realtime";
 
 export function AppShell() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+  useNotificationRealtime();
 
   function openCreate() {
     setDrawerOpen(false);
