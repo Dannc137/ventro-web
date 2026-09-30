@@ -6,6 +6,7 @@ import { getAccessToken } from "./api-client";
 export type RealtimeMessage = {
   area: string;
   eventId?: string;
+  comment?: unknown;
 };
 
 type Handler = (message: RealtimeMessage) => void;
