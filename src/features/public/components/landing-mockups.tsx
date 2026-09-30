@@ -10,7 +10,7 @@ export function BrowserFrame({ children }: { children: React.ReactNode }) {
         <span className="size-2.5 rounded-full bg-border-strong" />
         <span className="size-2.5 rounded-full bg-border-strong" />
         <span className="mx-auto rounded-md bg-card px-4 py-1 text-xs text-muted-foreground">
-          app.ventro.co
+          app.ventro.dev
         </span>
       </div>
       {children}
@@ -279,7 +279,7 @@ export function ClientViewMockup() {
 
       <div className="mt-4 flex items-center justify-between gap-3 rounded-md bg-primary-tint px-3 py-2.5">
         <span className="min-w-0 truncate text-xs text-primary-strong">
-          ventro.co/share/eze-okafor-23
+          ventro.dev/share/eze-okafor-23
         </span>
         <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium text-primary-strong">
           <Copy className="size-3.5" />

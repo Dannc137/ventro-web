@@ -54,27 +54,27 @@ export function LandingPage() {
   return (
     <div className="min-h-svh bg-background">
       <header className="sticky top-0 z-40 border-b bg-card/90 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-4 md:px-8">
-          <span className="text-lg font-semibold tracking-tight">Ventro</span>
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 md:px-8">
+  <span className="flex-1 text-lg font-semibold tracking-tight">Ventro</span>
 
-          <nav className="hidden gap-6 text-sm text-muted-foreground md:flex">
-            <a href="#features" className="transition-colors hover:text-foreground">
-              Features
-            </a>
-            <a href="#how" className="transition-colors hover:text-foreground">
-              How it works
-            </a>
-          </nav>
+  <nav className="hidden gap-6 text-sm text-muted-foreground md:flex">
+    <a href="#features" className="transition-colors hover:text-foreground">
+      Features
+    </a>
+    <a href="#how" className="transition-colors hover:text-foreground">
+      How it works
+    </a>
+  </nav>
 
-          <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
-              <Link to="/login">Sign in</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link to="/register">Get started</Link>
-            </Button>
-          </div>
-        </div>
+  <div className="flex flex-1 items-center justify-end gap-2">
+    <Button asChild variant="ghost" size="sm">
+      <Link to="/login">Sign in</Link>
+    </Button>
+    <Button asChild size="sm">
+      <Link to="/register">Get started</Link>
+    </Button>
+  </div>
+</div>
       </header>
 
       <main>
