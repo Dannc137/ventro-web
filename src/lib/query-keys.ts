@@ -13,4 +13,5 @@ export const queryKeys = {
   money: (eventId: string) => ["money", eventId] as const,
   activity: (eventId: string, limit: number) => ["activity", eventId, limit] as const,
   invites: (eventId: string) => ["invites", eventId] as const,
+  notifications: ["notifications"] as const,
 } as const

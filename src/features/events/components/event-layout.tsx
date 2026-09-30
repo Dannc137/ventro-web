@@ -1,29 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link, NavLink, Outlet, useParams } from "react-router";
+import { Link, Outlet, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatCountdown, formatLongDate } from "@/lib/format";
-import { can, type Permission } from "@/lib/permissions";
-import { cn } from "@/lib/utils";
+import { can } from "@/lib/permissions";
 import { ShareClientDialog } from "./share-client-dialog";
 import { useEvent } from "../hooks";
-
-const TABS: {
-  to: string;
-  label: string;
-  permission: Permission;
-  end: boolean;
-}[] = [
-  { to: "", label: "Dashboard", permission: "VIEW_EVENT", end: true },
-  { to: "tasks", label: "Tasks", permission: "VIEW_TASKS", end: false },
-  { to: "budget", label: "Budget", permission: "EDIT_BUDGET", end: false },
-  { to: "money", label: "Money", permission: "VIEW_MONEY", end: false },
-  { to: "members", label: "Members", permission: "MANAGE_MEMBERS", end: false },
-  { to: "activity", label: "Activity", permission: "VIEW_EVENT", end: false },
-  { to: "settings", label: "Settings", permission: "EDIT_EVENT", end: false },
-];
 
 export function EventLayout() {
   const { eventId = "" } = useParams();
@@ -50,8 +34,6 @@ export function EventLayout() {
       </div>
     );
   }
-
-  const visibleTabs = TABS.filter((tab) => can(event?.permissions, tab.permission));
 
   return (
     <>
@@ -88,34 +70,6 @@ export function EventLayout() {
           </div>
         )}
       </div>
-
-      <nav className="scrollbar-none mt-6 flex items-center gap-6 overflow-x-auto overflow-y-hidden border-b">
-        {visibleTabs.map((tab) => (
-          <NavLink
-            key={tab.label}
-            to={tab.to}
-            end={tab.end}
-            className={({ isActive }) =>
-              cn(
-                "-mb-px shrink-0 border-b-2 pb-3 text-sm font-medium transition-colors",
-                "focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none",
-                isActive
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground",
-              )
-            }
-          >
-            {tab.label}
-          </NavLink>
-        ))}
-
-        <Link
-          to="/events"
-          className="ml-auto shrink-0 rounded-md pb-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
-        >
-          All events
-        </Link>
-      </nav>
 
       <div className="mt-6">
         <Outlet context={event} />

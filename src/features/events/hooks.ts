@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/query-keys";
+import { useParams } from "react-router";
 import { changeEventDate, createEvent, deleteEvent, disableSharing, enableSharing, fetchEvent, fetchEvents, setEventArchived, updateEvent } from "./api";
 import type { UpdateEventRequest } from "./types";
 
@@ -16,6 +17,15 @@ export function useEvent(eventId: string) {
     queryFn: () => fetchEvent(eventId),
     enabled: Boolean(eventId),
   });
+}
+
+
+/** The event from the URL, or null when we're not inside one. */
+export function useCurrentEvent() {
+  const { eventId } = useParams();
+  const query = useEvent(eventId ?? "");
+
+  return eventId ? (query.data ?? null) : null;
 }
 
 export function useCreateEvent() {
