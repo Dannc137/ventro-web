@@ -15,6 +15,8 @@ import { ChangeDateDialog } from "../components/change-date-dialog";
 import { DeleteEventDialog } from "../components/delete-event-dialog";
 import { useUpdateEvent } from "../hooks";
 import type { EventDetail } from "../types";
+import { CancelEventDialog } from "../components/cancel-event-dialog";
+import { useMembers } from "@/features/members/hooks";
 
 const schema = z.object({
   name: z.string().trim().min(1, "Give the event a name").max(160, "That's too long"),
@@ -37,6 +39,7 @@ export function EventSettingsPage() {
 
   const canDelete = can(event, "DELETE_EVENT");
   const isArchived = event?.status === "ARCHIVED";
+  const members = useMembers(eventId);
 
   const {
     register,
@@ -147,7 +150,7 @@ export function EventSettingsPage() {
   <section className="rounded-lg border p-5">
     <h2 className="text-[15px] font-semibold">Cancel this event</h2>
     <p className="mt-1 text-sm text-foreground-soft">
-      Tells everyone by email and makes the event read-only. You can reinstate it
+      Tells everyone by email and makes the event read-only. You can restore it
       later.
     </p>
     <Button
@@ -190,6 +193,14 @@ export function EventSettingsPage() {
         event={event}
         open={archiveOpen}
         onOpenChange={setArchiveOpen}
+      />
+
+      <CancelEventDialog
+        eventId={event.id}
+        eventName={event.name}
+        memberCount={members.data?.length ?? 0}
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
       />
 
       <DeleteEventDialog

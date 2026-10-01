@@ -1,3 +1,5 @@
+import type { EventStatus } from "@/features/events/types";
+
 export type Permission =
   | "VIEW_EVENT"
   | "EDIT_EVENT"
@@ -23,10 +25,10 @@ const WRITE_PERMISSIONS: Permission[] = [
 ];
 
 export function can(
-  event: { permissions?: Permission[]; status?: string } | undefined,
+  event: { permissions: Permission[]; status: EventStatus } | undefined,
   permission: Permission,
 ): boolean {
-  if (!event?.permissions?.includes(permission)) return false;
+  if (!event?.permissions.includes(permission)) return false;
   if (event.status === "CANCELLED" && WRITE_PERMISSIONS.includes(permission)) {
     return false;
   }

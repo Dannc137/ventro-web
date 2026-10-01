@@ -11,9 +11,9 @@ export function CancelledBanner({ event }: { event: EventDetail }) {
 
   if (event.status !== "CANCELLED") return null;
 
-  function handleReinstate() {
+  function handleRestore() {
     uncancel.mutate(undefined, {
-      onSuccess: () => toast.success("Event reinstated"),
+      onSuccess: () => toast.success("Event restored"),
       onError: (error) => toast.error(getErrorMessage(error)),
     });
   }
@@ -39,11 +39,11 @@ export function CancelledBanner({ event }: { event: EventDetail }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={handleReinstate}
+            onClick={handleRestore}
             disabled={uncancel.isPending}
             className="shrink-0"
           >
-            {uncancel.isPending ? "Reinstating…" : "Reinstate event"}
+            {uncancel.isPending ? "Restoring…" : "Restore event"}
           </Button>
         )}
       </div>

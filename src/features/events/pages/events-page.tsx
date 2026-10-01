@@ -15,7 +15,7 @@ import { CreateEventDialog } from "../components/create-event-dialog";
 import { useEvents } from "../hooks";
 import type { EventCard as EventCardType } from "../types";
 
-type Filter = "upcoming" | "past" | "archived";
+type Filter = "upcoming" | "past" | "archived" | "cancelled";
 
 export function EventsPage() {
   const { data: events, isLoading, isError, error } = useEvents();
@@ -30,6 +30,7 @@ export function EventsPage() {
       upcoming: all.filter((e) => e.status === "ACTIVE" && e.daysUntil >= 0).length,
       past: all.filter((e) => e.status === "ACTIVE" && e.daysUntil < 0).length,
       archived: all.filter((e) => e.status === "ARCHIVED").length,
+      cancelled: all.filter((e) => e.status === "CANCELLED").length,
     };
   }, [events]);
 
@@ -39,7 +40,8 @@ export function EventsPage() {
     return (events ?? [])
       .filter((event) => {
         if (filter === "archived") return event.status === "ARCHIVED";
-        if (event.status === "ARCHIVED") return false;
+        if (filter === "cancelled") return event.status === "CANCELLED";
+        if (event.status !== "ACTIVE") return false;
         return filter === "upcoming" ? event.daysUntil >= 0 : event.daysUntil < 0;
       })
       .filter(
@@ -86,6 +88,14 @@ export function EventsPage() {
                 Archived
                 <span className="ml-1.5 text-xs tabular-nums opacity-60">
                   {counts.archived}
+                </span>
+              </TabsTrigger>
+            )}
+            {counts.cancelled > 0 && (
+              <TabsTrigger value="cancelled" className="flex-1 sm:flex-none">
+                Cancelled
+                <span className="ml-1.5 text-xs tabular-nums opacity-60">
+                  {counts.cancelled}
                 </span>
               </TabsTrigger>
             )}
@@ -138,7 +148,9 @@ export function EventsPage() {
                 ? "No past events yet."
                 : filter === "archived"
                   ? "Nothing archived."
-                  : "No upcoming events."}
+                  : filter === "cancelled"
+                    ? "Nothing cancelled."
+                    : "No upcoming events."}
           </p>
         )}
 
@@ -157,7 +169,10 @@ export function EventsPage() {
 }
 
 function EventCard({ event }: { event: EventCardType }) {
-  const dimmed = event.status === "ARCHIVED" || event.daysUntil < 0;
+  const dimmed =
+    event.status === "ARCHIVED" ||
+    event.status === "CANCELLED" ||
+    event.daysUntil < 0;
 
   return (
     <Link
@@ -184,11 +199,16 @@ function EventCard({ event }: { event: EventCardType }) {
         {event.venue ? ` · ${event.venue}` : ""}
       </p>
 
-      <div className="mt-5 flex items-center gap-2">
+            <div className="mt-5 flex items-center gap-2">
         <RoleBadge role={event.myRole} />
         {event.status === "ARCHIVED" && (
           <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
             Archived
+          </span>
+        )}
+        {event.status === "CANCELLED" && (
+          <span className="rounded-full bg-destructive-tint px-2 py-0.5 text-xs text-destructive-strong">
+            Cancelled
           </span>
         )}
       </div>

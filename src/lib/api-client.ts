@@ -42,7 +42,16 @@ export function refreshSession(): Promise<AuthResponse> {
   if (refreshPromise) return refreshPromise;
 
   refreshPromise = api
-    .post<AuthResponse>("/auth/refresh")
+    // `keepalive` tells the browser to finish this exact request — including
+    // applying the rotated refresh cookie from the response — even if the
+    // page navigates away before we get to read the response ourselves.
+    // Without it, a reload that interrupts an in-flight rotation strands the
+    // browser on the now-revoked cookie, and the next refresh attempt is
+    // rejected by the backend's reuse detection.
+    .post<AuthResponse>("/auth/refresh", undefined, {
+      adapter: "fetch",
+      fetchOptions: { keepalive: true },
+    })
     .then((res) => {
       setAccessToken(res.data.accessToken);
       return res.data;

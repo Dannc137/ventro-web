@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { refreshSession, setSessionExpiredHandler } from "@/lib/api-client";
 import type { UserSummary } from "@/types/api";
@@ -27,26 +27,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setSessionExpiredHandler(null);
   }, [clearSession]);
 
-  // On first load, try to restore the session from the refresh cookie
+     const restored = useRef(false);
+
   useEffect(() => {
-    let cancelled = false;
+    if (restored.current) return;
+    restored.current = true;
 
     refreshSession()
       .then((session) => {
-        if (cancelled) return;
         setUser(session.user);
         setStatus("authenticated");
         Sentry.setUser({ id: session.user.id });
       })
       .catch(() => {
-        if (cancelled) return;
         setStatus("anonymous");
         Sentry.setUser(null);
       });
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const login = useCallback(async (body: LoginRequest) => {
