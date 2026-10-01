@@ -74,3 +74,10 @@ export const changePasswordSchema = z
   });
 
 export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+
+export const changeEmailSchema = z.object({
+  newEmail: z.email("Enter a valid email address"),
+  currentPassword: z.string().min(1, "Enter your password"),
+});
+
+export type ChangeEmailValues = z.infer<typeof changeEmailSchema>;

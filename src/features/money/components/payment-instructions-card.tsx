@@ -49,6 +49,7 @@ export function PaymentInstructionsCard({
       <div className="rounded-lg border bg-card p-5">
         <h2 className="text-[13px] font-semibold">Where to send money</h2>
         <Textarea
+          aria-label="Payment instructions"
           value={draft}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDraft(e.target.value)}
           rows={3}

@@ -182,10 +182,10 @@ export function LandingPage() {
           />
           <div className="relative mx-auto max-w-3xl px-4 text-center md:px-8">
             <Reveal>
-              <h2 className="text-3xl leading-tight font-semibold tracking-tight text-white md:text-4xl">
+              <h2 className="text-3xl leading-tight font-semibold tracking-tight text-background md:text-4xl">
                 Every event is a hundred small decisions
               </h2>
-              <p className="mt-3 text-white/70">This is where they live.</p>
+              <p className="mt-3 text-background/70">This is where they live.</p>
             </Reveal>
           </div>
         </section>
@@ -217,10 +217,10 @@ export function LandingPage() {
         <section className="bg-foreground py-20 text-center md:py-24">
           <Reveal>
             <div className="mx-auto max-w-2xl px-4 md:px-8">
-              <h2 className="text-3xl leading-tight font-semibold tracking-tight text-white md:text-4xl">
+              <h2 className="text-3xl leading-tight font-semibold tracking-tight text-background md:text-4xl">
                 Your next event starts here
               </h2>
-              <p className="mt-3 text-white/70">
+              <p className="mt-3 text-background/70">
                 Create an event and invite the people helping you plan it.
               </p>
               <Button asChild size="lg" className="mt-8">

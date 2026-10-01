@@ -54,6 +54,7 @@
     --color-warning-strong: var(--warning-strong);
     --color-destructive-tint: var(--destructive-tint);
     --color-destructive-strong: var(--destructive-strong);
+    --color-destructive-foreground: var(--destructive-foreground);
 
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
@@ -105,6 +106,7 @@
     --destructive: #DC2626;
     --destructive-tint: #FDECEC;
     --destructive-strong: #B91C1C;
+    --destructive-foreground: #FFFFFF;
 
     /* Charts */
     --chart-1: #4F46E5;
@@ -167,6 +169,7 @@
     --destructive: #EF4444;
     --destructive-tint: #3A1517;
     --destructive-strong: #F87171;
+    --destructive-foreground: #FFFFFF;
 
     /* Charts */
     --chart-1: #6366F1;

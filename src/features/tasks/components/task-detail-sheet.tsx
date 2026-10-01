@@ -104,6 +104,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
         <>
             <SheetHeader className="pr-10">
                 <Input
+                    aria-label="Task title"
                     value={title}
                     disabled={!canEdit}
                     onChange={(e) => setTitle(e.target.value)}
@@ -129,7 +130,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                         disabled={!canEdit}
                         onValueChange={(value) => patch({ status: value as TaskStatus })}
                     >
-                        <SelectTrigger className="h-8 w-[160px]">
+                        <SelectTrigger aria-label="Status" className="h-8 w-[160px]">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -149,7 +150,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                             patch({ assigneeId: value === "unassigned" ? undefined : value })
                         }
                     >
-                        <SelectTrigger className="h-8 w-[200px]">
+                        <SelectTrigger aria-label="Assignee" className="h-8 w-[200px]">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -165,6 +166,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                     <span className="self-start pt-2 text-muted-foreground">Due</span>
                     <div>
                         <Input
+                            aria-label="Due date"
                             type="date"
                             value={task.dueDate}
                             disabled={!canEdit}

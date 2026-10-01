@@ -68,3 +68,14 @@ export async function changePassword(
 ): Promise<void> {
   await api.post("/users/me/change-password", body);
 }
+
+export async function requestEmailChange(
+  newEmail: string,
+  currentPassword: string,
+): Promise<void> {
+  await api.post("/users/me/change-email", { newEmail, currentPassword });
+}
+
+export async function confirmEmailChange(code: string): Promise<void> {
+  await api.post("/users/me/change-email/confirm", { code });
+}

@@ -99,10 +99,13 @@ export function NotificationBell() {
                     </span>
 
                     {!item.read && (
-                      <span
-                        aria-hidden="true"
-                        className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"
-                      />
+                      <>
+                        <span className="sr-only">Unread</span>
+                        <span
+                          aria-hidden="true"
+                          className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary"
+                        />
+                      </>
                     )}
                   </button>
                 </li>

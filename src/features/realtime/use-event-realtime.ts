@@ -30,7 +30,7 @@ export function useEventRealtime(eventId: string | undefined) {
           );
 
           // Clients can't see internal comments.
-          if (c.internal && !can(event?.permissions, "VIEW_INTERNAL")) break;
+          if (c.internal && !can(event, "VIEW_INTERNAL")) break;
 
           queryClient.setQueryData<CommentView[]>(
             queryKeys.comments(c.entityType, c.entityId),

@@ -11,13 +11,14 @@ import { PasswordInput } from "@/components/shared/password-input";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
 import { useAuth } from "../auth-context";
-import { changePassword, resendVerification, updateProfile } from "../api";
+import { changePassword, updateProfile } from "../api";
 import {
   changePasswordSchema,
   profileSchema,
   type ChangePasswordValues,
   type ProfileValues,
 } from "../schemas";
+import { ChangeEmailDialog } from "../components/change-email-dialog";
 
 export function ProfilePage() {
   const { user } = useAuth();
@@ -105,32 +106,8 @@ function NameSection() {
 }
 
 function EmailSection() {
-  const { user, refreshUser } = useAuth();
-  const [sending, setSending] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
-
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const timer = setInterval(() => setCooldown((s) => Math.max(0, s - 1)), 1000);
-    return () => clearInterval(timer);
-  }, [cooldown]);
-
-  useEffect(() => {
-    void refreshUser();
-  }, []);
-
-  async function handleResend() {
-    setSending(true);
-    try {
-      await resendVerification();
-      toast.success("Verification email sent");
-      setCooldown(60);
-    } catch (error) {
-      toast.error(getErrorMessage(error));
-    } finally {
-      setSending(false);
-    }
-  }
+  const { user } = useAuth();
+  const [changeOpen, setChangeOpen] = useState(false);
 
   return (
     <section className="rounded-lg border bg-card p-5">
@@ -139,37 +116,18 @@ function EmailSection() {
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{user?.email}</p>
-          {user?.emailVerified ? (
-            <p className="mt-0.5 flex items-center gap-1 text-xs text-success-strong">
-              <Check className="size-3.5" />
-              Confirmed
-            </p>
-          ) : (
-            <p className="mt-0.5 text-xs text-warning-strong">Not confirmed yet</p>
-          )}
+          <p className="mt-0.5 flex items-center gap-1 text-xs text-success-strong">
+            <Check className="size-3.5" />
+            Confirmed
+          </p>
         </div>
 
-        {!user?.emailVerified && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResend}
-            disabled={sending || cooldown > 0}
-          >
-            {cooldown > 0
-              ? `Resend in ${cooldown}s`
-              : sending
-                ? "Sending…"
-                : "Send confirmation"}
-          </Button>
-        )}
+        <Button variant="outline" size="sm" onClick={() => setChangeOpen(true)}>
+          Change email
+        </Button>
       </div>
 
-      {!user?.emailVerified && (
-        <p className="mt-3 text-sm text-muted-foreground">
-          Confirming your email means you can reset your password if you ever lose it.
-        </p>
-      )}
+      <ChangeEmailDialog open={changeOpen} onOpenChange={setChangeOpen} />
     </section>
   );
 }

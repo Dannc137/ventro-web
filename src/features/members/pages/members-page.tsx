@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/empty-state";
 import { RoleBadge } from "@/components/shared/role-badge";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
@@ -98,6 +99,18 @@ export function MembersPage() {
         </div>
       )}
 
+      {members.data?.length === 0 && (
+        <EmptyState
+          title="No members yet"
+          description="Invite the people helping you plan this event."
+          action={
+            canManage ? (
+              <Button onClick={() => setInviteOpen(true)}>Invite people</Button>
+            ) : undefined
+          }
+        />
+      )}
+
       <div className="space-y-2">
         {members.data?.map((member) => (
           <div
@@ -129,7 +142,10 @@ export function MembersPage() {
                 value={member.role}
                 onValueChange={(role) => handleRoleChange(member, role as EventRole)}
               >
-                <SelectTrigger className="h-8 w-[140px]">
+                <SelectTrigger
+                  aria-label={`Change role for ${member.fullName}`}
+                  className="h-8 w-[140px]"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -218,7 +234,7 @@ export function MembersPage() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRemove}
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Remove
             </AlertDialogAction>

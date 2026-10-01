@@ -122,6 +122,7 @@ export function CommentThread({ eventId, entityType, entityId, event }: CommentT
             ) : (
                 <div className="mt-4 space-y-2">
                     <Textarea
+                        aria-label="Add a comment"
                         value={body}
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
                         placeholder="Add a comment"

@@ -113,6 +113,7 @@ export function TasksPage() {
         <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-3">
                 <Input
+                    aria-label="Search tasks"
                     placeholder="Search tasks"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -120,7 +121,7 @@ export function TasksPage() {
                 />
 
                 <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger aria-label="Filter by assignee" className="w-[180px]">
                         <SelectValue placeholder="All assignees" />
                     </SelectTrigger>
                     <SelectContent>

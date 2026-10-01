@@ -78,7 +78,7 @@ export function CancelEventDialog({
           <Button
             onClick={handleCancel}
             disabled={cancelEvent.isPending}
-            className="bg-destructive text-white hover:bg-destructive-strong"
+            className="bg-destructive text-destructive-foreground hover:bg-destructive-strong"
           >
             {cancelEvent.isPending ? "Cancelling…" : "Cancel event"}
           </Button>

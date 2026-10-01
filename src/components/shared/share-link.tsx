@@ -37,7 +37,12 @@ export function ShareLink({ url, message, shareTitle }: ShareLinkProps) {
   return (
     <div className="space-y-2">
       <div className="flex gap-2">
-        <Input readOnly value={url} className="font-mono text-xs" />
+        <Input
+          readOnly
+          aria-label="Shareable link"
+          value={url}
+          className="font-mono text-xs"
+        />
         <Button type="button" variant="outline" onClick={handleCopy} className="shrink-0">
           {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
           {copied ? "Copied" : "Copy"}

@@ -99,7 +99,7 @@ function DeleteEventBody({
         <Button
           onClick={handleDelete}
           disabled={!matches || deleteEvent.isPending}
-          className="bg-destructive text-white hover:bg-destructive/90"
+          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
         >
           {deleteEvent.isPending ? "Deleting…" : "Delete event"}
         </Button>

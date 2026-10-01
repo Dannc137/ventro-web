@@ -163,65 +163,79 @@ export function DashboardPage() {
                             </Link>
                         </div>
 
-                        {data.topBlockers.map((blocker) => (
-                            <div
-                                key={blocker.taskId}
-                                className="mt-4 flex items-start gap-3 rounded-lg bg-destructive-tint p-4"
-                            >
-                                <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive-strong" />
-                                <p className="text-sm text-destructive-strong">
-                                    <span className="font-medium">{blocker.title}</span>
-                                    {blocker.overdue
-                                        ? ` is ${Math.abs(blocker.daysUntilDue)} days late — `
-                                        : " is "}
-                                    blocking {blocker.blockedCount}{" "}
-                                    {blocker.blockedCount === 1 ? "task" : "tasks"}
-                                </p>
-                            </div>
-                        ))}
-
-                        {upcoming.length === 0 && data.topBlockers.length === 0 ? (
-                            <p className="mt-4 text-sm text-muted-foreground">
-                                Nothing needs attention right now.
-                            </p>
-                        ) : (
-                            <ul className="mt-2 divide-y">
-                                {upcoming.map((task) => (
-                                    <li key={task.id} className="flex items-center gap-3 py-3">
-                                        <span
-                                            aria-hidden="true"
-                                            className={cn(
-                                                "size-1.5 shrink-0 rounded-full",
-                                                task.overdue
-                                                    ? "bg-destructive"
-                                                    : task.daysUntilDue <= 7
-                                                        ? "bg-warning"
-                                                        : "bg-success",
-                                            )}
-                                        />
-                                        <span className="min-w-0 flex-1 truncate text-sm">{task.title}</span>
-                                        {task.assignee && (
-                                            <UserAvatar
-                                                name={task.assignee.fullName}
-                                                className="size-6 text-[10px]"
-                                            />
-                                        )}
-                                        <span
-                                            className={cn(
-                                                "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium tabular-nums",
-                                                task.overdue
-                                                    ? "bg-destructive-tint text-destructive-strong"
-                                                    : task.daysUntilDue <= 7
-                                                        ? "bg-warning-tint text-warning-strong"
-                                                        : "bg-muted text-muted-foreground",
-                                            )}
-                                        >
-                                            {formatCountdown(task.daysUntilDue)}
-                                        </span>
-
-                                    </li>
+                        {tasks.isLoading ? (
+                            <div className="mt-4 space-y-3">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <Skeleton key={i} className="h-10 w-full" />
                                 ))}
-                            </ul>
+                            </div>
+                        ) : tasks.isError ? (
+                            <div className="mt-4 rounded-lg border bg-destructive-tint px-4 py-3 text-sm text-destructive-strong">
+                                {getErrorMessage(tasks.error)}
+                            </div>
+                        ) : (
+                            <>
+                                {data.topBlockers.map((blocker) => (
+                                    <div
+                                        key={blocker.taskId}
+                                        className="mt-4 flex items-start gap-3 rounded-lg bg-destructive-tint p-4"
+                                    >
+                                        <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive-strong" />
+                                        <p className="text-sm text-destructive-strong">
+                                            <span className="font-medium">{blocker.title}</span>
+                                            {blocker.overdue
+                                                ? ` is ${Math.abs(blocker.daysUntilDue)} days late — `
+                                                : " is "}
+                                            blocking {blocker.blockedCount}{" "}
+                                            {blocker.blockedCount === 1 ? "task" : "tasks"}
+                                        </p>
+                                    </div>
+                                ))}
+
+                                {upcoming.length === 0 && data.topBlockers.length === 0 ? (
+                                    <p className="mt-4 text-sm text-muted-foreground">
+                                        Nothing needs attention right now.
+                                    </p>
+                                ) : (
+                                    <ul className="mt-2 divide-y">
+                                        {upcoming.map((task) => (
+                                            <li key={task.id} className="flex items-center gap-3 py-3">
+                                                <span
+                                                    aria-hidden="true"
+                                                    className={cn(
+                                                        "size-1.5 shrink-0 rounded-full",
+                                                        task.overdue
+                                                            ? "bg-destructive"
+                                                            : task.daysUntilDue <= 7
+                                                                ? "bg-warning"
+                                                                : "bg-success",
+                                                    )}
+                                                />
+                                                <span className="min-w-0 flex-1 truncate text-sm">{task.title}</span>
+                                                {task.assignee && (
+                                                    <UserAvatar
+                                                        name={task.assignee.fullName}
+                                                        className="size-6 text-[10px]"
+                                                    />
+                                                )}
+                                                <span
+                                                    className={cn(
+                                                        "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium tabular-nums",
+                                                        task.overdue
+                                                            ? "bg-destructive-tint text-destructive-strong"
+                                                            : task.daysUntilDue <= 7
+                                                                ? "bg-warning-tint text-warning-strong"
+                                                                : "bg-muted text-muted-foreground",
+                                                    )}
+                                                >
+                                                    {formatCountdown(task.daysUntilDue)}
+                                                </span>
+
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </>
                         )}
                     </section>
                 )}
