@@ -37,6 +37,7 @@ export function TasksPage() {
 
     const { user } = useAuth();
     const canEdit = can(event, "EDIT_TASKS");
+    const canEditOwn = can(event, "EDIT_OWN_TASKS");
 
     const [searchParams] = useSearchParams();
 
@@ -169,7 +170,10 @@ export function TasksPage() {
                                 <TaskRow
                                     key={task.id}
                                     task={task}
-                                    canEdit={canEdit || task.assignee?.id === user?.id}
+                                    canEdit={
+                                        canEdit ||
+                                        (canEditOwn && task.assignee?.id === user?.id)
+                                    }
                                     onToggle={handleToggle}
                                     onOpen={handleOpen}
                                 />

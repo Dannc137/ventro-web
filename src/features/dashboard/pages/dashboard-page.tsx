@@ -54,7 +54,7 @@ export function DashboardPage() {
 
     const { schedule, budget, funding } = data;
 
-    const showsFunding = Boolean(funding) && can(event, "EDIT_MONEY");
+    const showsFunding = Boolean(funding) && can(event, "VIEW_MONEY");
     const showsMine = !can(event, "EDIT_MONEY") && Boolean(data.myContribution);
 
     const statCount = [canSeeTasks, Boolean(budget), showsFunding || showsMine].filter(

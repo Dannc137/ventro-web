@@ -12,13 +12,13 @@ const TABS: {
   permission: Permission;
   end: boolean;
 }[] = [
-  { to: "", label: "Dashboard", permission: "VIEW_EVENT", end: true },
+   { to: "", label: "Dashboard", permission: "VIEW_EVENT", end: true },
   { to: "tasks", label: "Tasks", permission: "VIEW_TASKS", end: false },
-  { to: "budget", label: "Budget", permission: "EDIT_BUDGET", end: false },
+  { to: "budget", label: "Budget", permission: "VIEW_BUDGET_DETAIL", end: false },
   { to: "money", label: "Money", permission: "VIEW_MONEY", end: false },
-  { to: "members", label: "Members", permission: "MANAGE_MEMBERS", end: false },
+  { to: "members", label: "Members", permission: "VIEW_EVENT", end: false },
   { to: "activity", label: "Activity", permission: "VIEW_EVENT", end: false },
-  { to: "settings", label: "Settings", permission: "EDIT_EVENT", end: false },
+  { to: "settings", label: "Settings", permission: "VIEW_EVENT", end: false },
 ];
 
 export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
