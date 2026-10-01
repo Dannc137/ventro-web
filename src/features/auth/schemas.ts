@@ -48,3 +48,29 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
+
+export const profileSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(1, "Your name can't be empty")
+    .max(120, "That's too long"),
+});
+
+export type ProfileValues = z.infer<typeof profileSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Enter your current password"),
+    newPassword: z
+      .string()
+      .min(8, "Use at least 8 characters")
+      .max(72, "Use 72 characters or fewer"),
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.newPassword === values.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;

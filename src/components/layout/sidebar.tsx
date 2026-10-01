@@ -100,16 +100,23 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
             </nav>
 
             <div className="mt-auto flex items-center gap-2.5 border-t px-3 py-3">
-                <UserAvatar name={user?.fullName ?? ""} />
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">
-                    {user?.fullName}
-                </span>
-                <button
-                    type="button"
-                    onClick={logout}
-                    aria-label="Log out"
-                    className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
+                <NavLink
+                    to="/account"
+                    onClick={onNavigate}
+                    className={({ isActive }) =>
+                        cn(
+                            "flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-1 py-1 transition-colors",
+                            "focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none",
+                            isActive ? "bg-primary-tint" : "hover:bg-muted",
+                        )
+                    }
                 >
+                    <UserAvatar name={user?.fullName ?? ""} />
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                        {user?.fullName}
+                    </span>
+                </NavLink>
+                <button type="button" onClick={logout} aria-label="Log out" className="...">
                     <LogOut className="size-4" />
                 </button>
             </div>

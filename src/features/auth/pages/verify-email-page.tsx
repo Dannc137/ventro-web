@@ -1,93 +1,178 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router";
-import { Check } from "lucide-react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { FormAlert } from "@/components/shared/form-alert";
-import { PublicLayout } from "@/components/layout/public-layout";
 import { getErrorMessage } from "@/lib/api-client";
+import { AuthLayout } from "../components/auth-layout";
 import { useAuth } from "../auth-context";
-import { verifyEmail } from "../api";
-// import { useForceLight } from "@/hooks/use-force-light";
+import { resendCode, verifyCode } from "../api";
 
-type State = "verifying" | "done" | "failed";
+const COOLDOWN = 45;
+const LENGTH = 6;
 
 export function VerifyEmailPage() {
-  const { token = "" } = useParams();
-  const { status, refreshUser } = useAuth();
-  // useForceLight();
+  const { user, refreshSessionNow, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const [state, setState] = useState<State>("verifying");
+  const [digits, setDigits] = useState<string[]>(Array(LENGTH).fill(""));
   const [error, setError] = useState<string | null>(null);
-  const attempted = useRef(false);
+  const [checking, setChecking] = useState(false);
+  const [cooldown, setCooldown] = useState(COOLDOWN);
 
-    useEffect(() => {
-    if (attempted.current || !token) return;
-    if (status === "loading") return;
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-    attempted.current = true;
+  useEffect(() => {
+    inputs.current[0]?.focus();
+  }, []);
 
-    verifyEmail(token)
-      .then(() => {
-        setState("done");
-        if (status === "authenticated") void refreshUser();
-      })
-      .catch((err) => {
-        setError(getErrorMessage(err));
-        setState("failed");
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => setCooldown((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
+  async function submit(code: string) {
+    setChecking(true);
+    setError(null);
+
+    try {
+      await verifyCode(code);
+      await refreshSessionNow();
+      toast.success("Email confirmed");
+      navigate("/events", { replace: true });
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setDigits(Array(LENGTH).fill(""));
+      inputs.current[0]?.focus();
+    } finally {
+      setChecking(false);
+    }
+  }
+
+  function handleChange(index: number, value: string) {
+    const clean = value.replace(/\D/g, "");
+    if (!clean) return;
+
+    const next = [...digits];
+
+    // Handle a pasted code landing in one box.
+    if (clean.length > 1) {
+      clean.split("").slice(0, LENGTH - index).forEach((char, offset) => {
+        next[index + offset] = char;
       });
-  }, [token, status, refreshUser]);
+      setDigits(next);
+
+      const filled = next.filter(Boolean).length;
+      if (filled === LENGTH) void submit(next.join(""));
+      else inputs.current[Math.min(index + clean.length, LENGTH - 1)]?.focus();
+      return;
+    }
+
+    next[index] = clean;
+    setDigits(next);
+
+    if (index < LENGTH - 1) {
+      inputs.current[index + 1]?.focus();
+    }
+
+    if (next.every(Boolean)) void submit(next.join(""));
+  }
+
+  function handleKeyDown(index: number, event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Backspace") {
+      event.preventDefault();
+
+      const next = [...digits];
+
+      if (next[index]) {
+        next[index] = "";
+        setDigits(next);
+      } else if (index > 0) {
+        next[index - 1] = "";
+        setDigits(next);
+        inputs.current[index - 1]?.focus();
+      }
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+
+    if (event.key === "ArrowRight" && index < LENGTH - 1) {
+      inputs.current[index + 1]?.focus();
+    }
+  }
+
+  async function handleResend() {
+    setError(null);
+
+    try {
+      await resendCode();
+      toast.success("New code sent");
+      setCooldown(COOLDOWN);
+      setDigits(Array(LENGTH).fill(""));
+      inputs.current[0]?.focus();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
+  }
 
   return (
-    <PublicLayout>
-      <div className="mx-auto max-w-md py-8">
-        {state === "verifying" && (
-          <>
-            <Skeleton className="h-8 w-56" />
-            <Skeleton className="mt-3 h-4 w-72" />
-          </>
-        )}
+    <AuthLayout
+      title="Confirm your email"
+      subtitle={`We sent a 6-digit code to ${user?.email ?? "your email"}.`}
+    >
+      <div className="space-y-5">
+        {error && <FormAlert title={error} />}
 
-        {state === "done" && (
-          <>
-            <span className="flex size-10 items-center justify-center rounded-full bg-success-tint">
-              <Check className="size-5 text-success-strong" />
-            </span>
-            <h1 className="mt-5 text-2xl font-semibold tracking-tight">
-              Email confirmed
-            </h1>
-            <p className="mt-2 text-sm text-foreground-soft">
-              You'll get reminders about your events, and you can reset your password
-              if you ever need to.
-            </p>
-            <Button asChild className="mt-6">
-              <Link to={status === "authenticated" ? "/events" : "/login"}>
-                {status === "authenticated" ? "Back to Ventro" : "Sign in"}
-              </Link>
-            </Button>
-          </>
-        )}
+        <div className="flex justify-between gap-2">
+          {digits.map((digit, index) => (
+            <input
+              key={index}
+              ref={(el) => {
+                inputs.current[index] = el;
+              }}
+              type="text"
+              inputMode="numeric"
+              autoComplete={index === 0 ? "one-time-code" : "off"}
+              maxLength={LENGTH}
+              value={digit}
+              disabled={checking}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              aria-label={`Digit ${index + 1}`}
+              className="h-14 w-full rounded-lg border bg-card text-center text-xl font-semibold tabular-nums transition-colors focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none disabled:opacity-60"
+            />
+          ))}
+        </div>
 
-        {state === "failed" && (
-          <>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              This link didn't work
-            </h1>
-            <div className="mt-4">
-              <FormAlert title={error ?? "The link isn't valid."}>
-                {status === "authenticated"
-                  ? "Ask for a new one from your account."
-                  : "Sign in and request a new link from the banner at the top."}
-              </FormAlert>
-            </div>
-            <Button asChild variant="outline" className="mt-6">
-              <Link to={status === "authenticated" ? "/events" : "/login"}>
-                {status === "authenticated" ? "Back to Ventro" : "Sign in"}
-              </Link>
-            </Button>
-          </>
-        )}
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            {checking ? "Checking…" : "Didn't get it? Check your spam folder."}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleResend}
+            disabled={cooldown > 0 || checking}
+            className="shrink-0"
+          >
+            {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend"}
+          </Button>
+        </div>
+
+        <p className="border-t pt-5 text-center text-sm text-muted-foreground">
+          Wrong email address?{" "}
+          <button
+            type="button"
+            onClick={() => void logout()}
+            className="font-medium text-primary hover:text-primary-hover"
+          >
+            Start over
+          </button>
+        </p>
       </div>
-    </PublicLayout>
+    </AuthLayout>
   );
 }

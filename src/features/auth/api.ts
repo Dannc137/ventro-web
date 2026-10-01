@@ -1,10 +1,12 @@
 import { api, setAccessToken } from "@/lib/api-client"
 import type { AuthResponse, UserSummary } from "@/types/api"
 import type {
+  ChangePasswordRequest,
   ForgotPasswordRequest,
   LoginRequest,
   RegisterRequest,
   ResetPasswordRequest,
+  UpdateProfileRequest,
 } from "./types"
 
 export async function login(body: LoginRequest): Promise<AuthResponse> {
@@ -42,10 +44,27 @@ export async function resetPassword(body: ResetPasswordRequest): Promise<void> {
   await api.post("/auth/reset-password", body)
 }
 
-export async function verifyEmail(token: string): Promise<void> {
-  await api.post("/auth/verify-email", { token })
+export async function verifyCode(code: string): Promise<void> {
+  await api.post("/auth/verify-code", { code });
+}
+
+export async function resendCode(): Promise<void> {
+  await api.post("/auth/resend-code");
 }
 
 export async function resendVerification(): Promise<void> {
   await api.post("/users/me/resend-verification")
+}
+
+export async function updateProfile(
+  body: UpdateProfileRequest,
+): Promise<UserSummary> {
+  const { data } = await api.patch<UserSummary>("/users/me", body);
+  return data;
+}
+
+export async function changePassword(
+  body: ChangePasswordRequest,
+): Promise<void> {
+  await api.post("/users/me/change-password", body);
 }

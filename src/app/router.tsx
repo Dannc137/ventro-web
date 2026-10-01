@@ -1,7 +1,16 @@
 import { createBrowserRouter } from "react-router";
 import { NotFoundPage } from "@/components/shared/not-found-page";
 import { RouteErrorPage } from "@/components/shared/route-error-page";
-import { LoginPage, ProtectedRoute, PublicOnlyRoute, RegisterPage, ForgotPasswordPage, ResetPasswordPage } from "@/features/auth";
+import {
+    ForgotPasswordPage,
+    LoginPage,
+    ProtectedRoute,
+    PublicOnlyRoute,
+    RegisterPage,
+    ResetPasswordPage,
+    VerifiedRoute,
+    VerifyEmailPage,
+} from "@/features/auth";
 import { EventsPage } from "@/features/events/pages/events-page";
 import { AppShell } from "@/components/layout/app-shell";
 import { DashboardPage } from "@/features/dashboard/pages/dashboard-page";
@@ -15,7 +24,7 @@ import { MembersPage } from "@/features/members/pages/members-page";
 import { EventSettingsPage } from "@/features/events/pages/event-settings-page";
 import { InvitePage } from "@/features/public/pages/invite-page";
 import { LandingPage } from "@/features/public/pages/landing-page";
-import { VerifyEmailPage } from "@/features/auth";
+import { ProfilePage } from "@/features/auth/pages/profile-page";
 
 export const router = createBrowserRouter([
     {
@@ -23,7 +32,6 @@ export const router = createBrowserRouter([
         children: [
             { path: "/invite/:token", element: <InvitePage /> },
             { path: "/share/:token", element: <ClientViewPage /> },
-            { path: "/verify-email/:token", element: <VerifyEmailPage /> },
             {
                 element: <PublicOnlyRoute />,
                 children: [
@@ -36,21 +44,28 @@ export const router = createBrowserRouter([
             {
                 element: <ProtectedRoute />,
                 children: [
+                    { path: "/verify-email", element: <VerifyEmailPage /> },
                     {
-                        element: <AppShell />,
+                        element: <VerifiedRoute />,
                         children: [
-                            { path: "/events", element: <EventsPage /> },
                             {
-                                path: "/events/:eventId",
-                                element: <EventLayout />,
+                                element: <AppShell />,
                                 children: [
-                                    { index: true, element: <DashboardPage /> },
-                                    { path: "tasks", element: <TasksPage /> },
-                                    { path: "budget", element: <BudgetPage /> },
-                                    { path: "money", element: <MoneyPage /> },
-                                    { path: "activity", element: <ActivityPage /> },
-                                    { path: "members", element: <MembersPage /> },
-                                    { path: "settings", element: <EventSettingsPage /> },
+                                    { path: "/events", element: <EventsPage /> },
+                                    { path: "/account", element: <ProfilePage /> },
+                                    {
+                                        path: "/events/:eventId",
+                                        element: <EventLayout />,
+                                        children: [
+                                            { index: true, element: <DashboardPage /> },
+                                            { path: "tasks", element: <TasksPage /> },
+                                            { path: "budget", element: <BudgetPage /> },
+                                            { path: "money", element: <MoneyPage /> },
+                                            { path: "activity", element: <ActivityPage /> },
+                                            { path: "members", element: <MembersPage /> },
+                                            { path: "settings", element: <EventSettingsPage /> },
+                                        ],
+                                    },
                                 ],
                             },
                         ],
