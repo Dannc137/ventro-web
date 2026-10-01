@@ -17,7 +17,8 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
     const { user, logout } = useAuth();
 
     const events = (allEvents ?? []).filter(
-        (event) => event.status === "ACTIVE" && event.daysUntil >= -30,
+        (event) =>
+            event.status !== "ARCHIVED" && event.daysUntil >= -30,
     );
 
     return (
@@ -57,7 +58,10 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
                             >
                                 <StatusDot days={event.daysUntil} className="mt-1.5" />
                                 <span className="min-w-0">
-                                    <span className="block truncate text-sm leading-tight font-medium">
+                                    <span className={cn(
+                                        "block truncate text-sm leading-tight font-medium",
+                                        event.status === "CANCELLED" && "text-muted-foreground line-through",
+                                    )}>
                                         {event.name}
                                     </span>
                                     <span className="mt-0.5 block text-xs leading-tight text-muted-foreground">

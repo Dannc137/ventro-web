@@ -23,6 +23,7 @@ export function DashboardPage() {
     const dashboard = useDashboard(eventId);
     const canSeeTasks = can(event, "VIEW_TASKS");
     
+    
     const tasks = useTasks(canSeeTasks ? eventId : "");
 
     if (dashboard.isLoading) {
@@ -54,8 +55,9 @@ export function DashboardPage() {
 
     const { schedule, budget, funding } = data;
 
-    const showsFunding = Boolean(funding) && can(event, "VIEW_MONEY");
-    const showsMine = !can(event, "EDIT_MONEY") && Boolean(data.myContribution);
+    const canManageMoney = event?.permissions.includes("EDIT_MONEY") ?? false;
+    const showsFunding = Boolean(funding) && canManageMoney;
+    const showsMine = !canManageMoney && Boolean(data.myContribution);
 
     const statCount = [canSeeTasks, Boolean(budget), showsFunding || showsMine].filter(
         Boolean,
@@ -109,7 +111,7 @@ export function DashboardPage() {
                     />
                 )}
 
-                {funding && can(event, "EDIT_MONEY") && (
+                {showsFunding && funding && (
                     <StatCard
                         label="Money in"
                         value={formatMoney(funding.received)}
@@ -125,7 +127,7 @@ export function DashboardPage() {
                     />
                 )}
 
-                {!can(event, "EDIT_MONEY") && data.myContribution && (
+                {showsMine && data.myContribution && (
                     <StatCard
                         label="Your contribution"
                         value={formatMoney(data.myContribution.received)}
