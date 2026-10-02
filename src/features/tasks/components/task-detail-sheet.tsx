@@ -170,6 +170,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                             aria-label="Due date"
                             value={task.dueDate}
                             disabled={!canEdit}
+                            disablePast
                             onChange={(next) => {
                                 if (!next) return;
                                 if (task.dateIsFixed || !event) {

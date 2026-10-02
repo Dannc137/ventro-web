@@ -89,7 +89,7 @@ function ChangeDateBody({
       <div className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="eventDate">New date</Label>
-          <DatePicker id="eventDate" value={date} onChange={setDate} />
+          <DatePicker id="eventDate" value={date} onChange={setDate} disablePast />
         </div>
 
         {changed && (

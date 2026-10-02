@@ -101,6 +101,7 @@ export function CreateEventDialog({ open, onOpenChange }: CreateEventDialogProps
                   id="eventDate"
                   value={field.value ?? ""}
                   onChange={field.onChange}
+                  disablePast
                   aria-invalid={!!errors.eventDate}
                 />
               )}

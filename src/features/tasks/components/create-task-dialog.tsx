@@ -133,6 +133,7 @@ export function CreateTaskDialog({ eventId, open, onOpenChange }: CreateTaskDial
                             id="dueDate"
                             value={watch("dueDate") ?? ""}
                             onChange={(next) => setValue("dueDate", next, { shouldValidate: true })}
+                            disablePast
                             aria-invalid={!!errors.dueDate}
                         />
                         {errors.dueDate && (

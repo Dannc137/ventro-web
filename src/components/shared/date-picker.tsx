@@ -33,6 +33,8 @@ type DatePickerProps = {
   onChange: (value: string) => void;
   id?: string;
   disabled?: boolean;
+  /** Greys out and blocks selecting any day before today. */
+  disablePast?: boolean;
   placeholder?: string;
   className?: string;
   size?: ComponentProps<typeof Button>["size"];
@@ -51,6 +53,7 @@ export function DatePicker({
   onChange,
   id,
   disabled,
+  disablePast,
   placeholder = "Pick a date",
   className,
   size,
@@ -58,6 +61,9 @@ export function DatePicker({
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const selected = parseIsoDate(value);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -85,6 +91,7 @@ export function DatePicker({
           selected={selected}
           defaultMonth={selected}
           autoFocus
+          disabled={disablePast ? { before: today } : undefined}
           onSelect={(date) => {
             if (!date) return;
             onChange(toIsoDate(date));
