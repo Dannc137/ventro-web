@@ -21,6 +21,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { DatePicker } from "@/components/shared/date-picker";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { useMembers } from "@/features/members/hooks";
 import { useCreateTask } from "../hooks";
@@ -127,11 +129,11 @@ export function CreateTaskDialog({ eventId, open, onOpenChange }: CreateTaskDial
 
                     <div className="space-y-1.5">
                         <Label htmlFor="dueDate">Due date</Label>
-                        <Input
+                        <DatePicker
                             id="dueDate"
-                            type="date"
+                            value={watch("dueDate") ?? ""}
+                            onChange={(next) => setValue("dueDate", next, { shouldValidate: true })}
                             aria-invalid={!!errors.dueDate}
-                            {...register("dueDate")}
                         />
                         {errors.dueDate && (
                             <p className="text-sm text-destructive-strong">{errors.dueDate.message}</p>
@@ -176,7 +178,13 @@ export function CreateTaskDialog({ eventId, open, onOpenChange }: CreateTaskDial
                             Cancel
                         </Button>
                         <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? "Adding…" : "Add task"}
+                            {isSubmitting ? (
+                                <>
+                                    Adding <LoadingDots />
+                                </>
+                            ) : (
+                                "Add task"
+                            )}
                         </Button>
                     </DialogFooter>
                 </form>

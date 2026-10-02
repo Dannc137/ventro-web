@@ -11,6 +11,7 @@ import { registerSchema, type RegisterValues } from "../schemas";
 import { PasswordInput } from "@/components/shared/password-input";
 import { getErrorMessage, getFieldErrors, isRateLimited } from "@/lib/api-client";
 import { FormAlert } from "@/components/shared/form-alert";
+import { LoadingDots } from "@/components/shared/loading-dots";
 // import { useForceLight } from "@/hooks/use-force-light";
 
 export function RegisterPage() {
@@ -123,7 +124,13 @@ export function RegisterPage() {
                 </div>
 
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? "Creating account…" : "Create account"}
+                    {isSubmitting ? (
+                        <>
+                            Creating account <LoadingDots />
+                        </>
+                    ) : (
+                        "Create account"
+                    )}
                 </Button>
             </form>
 

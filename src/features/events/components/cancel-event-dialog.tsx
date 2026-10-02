@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { useCancelEvent } from "../hooks";
 
@@ -80,7 +81,13 @@ export function CancelEventDialog({
             disabled={cancelEvent.isPending}
             className="bg-destructive text-destructive-foreground hover:bg-destructive-strong"
           >
-            {cancelEvent.isPending ? "Cancelling…" : "Cancel event"}
+            {cancelEvent.isPending ? (
+              <>
+                Cancelling <LoadingDots />
+              </>
+            ) : (
+              "Cancel event"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

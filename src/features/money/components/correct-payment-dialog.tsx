@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
+import { MoneyInput } from "@/components/shared/money-input";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatDate, formatMoney } from "@/lib/format";
 import { useRecordPayment } from "../hooks";
@@ -47,6 +49,7 @@ export function CorrectPaymentDialog({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     watch,
@@ -107,13 +110,11 @@ export function CorrectPaymentDialog({
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
           <div className="space-y-1.5">
             <Label htmlFor="actual">What was the actual amount?</Label>
-            <Input
+            <MoneyInput
+              control={control}
+              name="actual"
               id="actual"
-              type="number"
-              min="0"
-              step="1000"
               aria-invalid={!!errors.actual}
-              {...register("actual")}
             />
             {errors.actual && (
               <p className="text-sm text-destructive-strong">{errors.actual.message}</p>
@@ -143,7 +144,13 @@ export function CorrectPaymentDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting || difference === 0}>
-              {isSubmitting ? "Saving…" : "Save correction"}
+              {isSubmitting ? (
+                <>
+                  Saving <LoadingDots />
+                </>
+              ) : (
+                "Save correction"
+              )}
             </Button>
           </DialogFooter>
         </form>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { useDeleteEvent } from "../hooks";
 import type { EventDetail } from "../types";
@@ -101,7 +102,13 @@ function DeleteEventBody({
           disabled={!matches || deleteEvent.isPending}
           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
         >
-          {deleteEvent.isPending ? "Deleting…" : "Delete event"}
+          {deleteEvent.isPending ? (
+            <>
+              Deleting <LoadingDots />
+            </>
+          ) : (
+            "Delete event"
+          )}
         </Button>
       </DialogFooter>
     </>

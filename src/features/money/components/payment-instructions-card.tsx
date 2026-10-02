@@ -3,6 +3,7 @@ import { Check, Copy, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { useSetPaymentInstructions } from "../hooks";
 
@@ -58,7 +59,13 @@ export function PaymentInstructionsCard({
         />
         <div className="mt-3 flex gap-2">
           <Button size="sm" onClick={handleSave} disabled={save.isPending}>
-            {save.isPending ? "Saving…" : "Save"}
+            {save.isPending ? (
+              <>
+                Saving <LoadingDots />
+              </>
+            ) : (
+              "Save"
+            )}
           </Button>
           <Button
             size="sm"

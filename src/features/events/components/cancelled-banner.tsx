@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatLongDate } from "@/lib/format";
 import type { EventDetail } from "../types";
@@ -43,7 +44,13 @@ export function CancelledBanner({ event }: { event: EventDetail }) {
             disabled={uncancel.isPending}
             className="shrink-0"
           >
-            {uncancel.isPending ? "Restoring…" : "Restore event"}
+            {uncancel.isPending ? (
+              <>
+                Restoring <LoadingDots />
+              </>
+            ) : (
+              "Restore event"
+            )}
           </Button>
         )}
       </div>

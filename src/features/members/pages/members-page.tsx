@@ -33,9 +33,15 @@ import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatDate } from "@/lib/format";
 import { can } from "@/lib/permissions";
+import { cn } from "@/lib/utils";
 import type { EventDetail, EventRole } from "@/features/events/types";
 import { InviteDialog } from "../components/invite-dialog";
-import { useChangeMemberRole, useMembers, useRemoveMember } from "../hooks";
+import {
+  useChangeMemberRole,
+  useMembers,
+  useRemoveMember,
+  useRevokeInvite,
+} from "../hooks";
 import type { MemberView } from "../types";
 
 export function MembersPage() {
@@ -45,6 +51,7 @@ export function MembersPage() {
   const members = useMembers(eventId);
   const changeRole = useChangeMemberRole(eventId);
   const removeMember = useRemoveMember(eventId);
+  const revokeInvite = useRevokeInvite(eventId);
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [removing, setRemoving] = useState<MemberView | null>(null);
@@ -52,6 +59,8 @@ export function MembersPage() {
   const canManage = can(event, "MANAGE_MEMBERS");
 
   function handleRoleChange(member: MemberView, role: EventRole) {
+    if (!member.memberId) return;
+
     changeRole.mutate(
       { memberId: member.memberId, role },
       {
@@ -62,13 +71,22 @@ export function MembersPage() {
   }
 
   function handleRemove() {
-    if (!removing) return;
+    if (!removing || !removing.memberId) return;
 
     removeMember.mutate(removing.memberId, {
       onSuccess: () => {
         toast.success(`${removing.fullName} removed`);
         setRemoving(null);
       },
+      onError: (error) => toast.error(getErrorMessage(error)),
+    });
+  }
+
+  function handleRevoke(member: MemberView) {
+    if (!member.inviteId) return;
+
+    revokeInvite.mutate(member.inviteId, {
+      onSuccess: () => toast.success(`Invite to ${member.fullName} revoked`),
       onError: (error) => toast.error(getErrorMessage(error)),
     });
   }
@@ -114,8 +132,11 @@ export function MembersPage() {
       <div className="space-y-2">
         {members.data?.map((member) => (
           <div
-            key={member.memberId}
-            className="flex flex-wrap items-center gap-3 rounded-lg border bg-card p-4"
+            key={member.memberId ?? member.inviteId}
+            className={cn(
+              "flex flex-wrap items-center gap-3 rounded-lg border bg-card p-4",
+              member.pending && "opacity-70",
+            )}
           >
             <UserAvatar name={member.fullName} className="size-9 shrink-0" />
 
@@ -127,17 +148,24 @@ export function MembersPage() {
                     You
                   </span>
                 )}
+                {member.pending && (
+                  <span className="shrink-0 rounded-full bg-warning-tint px-1.5 text-xs font-normal text-warning-strong">
+                    Pending
+                  </span>
+                )}
               </p>
               {canManage && (
                 <p className="truncate text-xs text-muted-foreground">{member.email}</p>
               )}
             </div>
 
-            <p className="hidden text-xs text-muted-foreground sm:block">
-              Joined {formatDate(member.joinedAt)}
-            </p>
+            {!member.pending && (
+              <p className="hidden text-xs text-muted-foreground sm:block">
+                Joined {formatDate(member.joinedAt!)}
+              </p>
+            )}
 
-            {canManage && member.role !== "OWNER" ? (
+            {canManage && !member.pending && member.role !== "OWNER" ? (
               <Select
                 value={member.role}
                 onValueChange={(role) => handleRoleChange(member, role as EventRole)}
@@ -158,7 +186,7 @@ export function MembersPage() {
               <RoleBadge role={member.role} />
             )}
 
-            {canManage && member.role !== "OWNER" && (
+            {canManage && (member.pending || member.role !== "OWNER") && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
@@ -170,12 +198,21 @@ export function MembersPage() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => setRemoving(member)}
-                    className="text-destructive-strong"
-                  >
-                    Remove from event
-                  </DropdownMenuItem>
+                  {member.pending ? (
+                    <DropdownMenuItem
+                      onClick={() => handleRevoke(member)}
+                      className="text-destructive-strong"
+                    >
+                      Revoke invite
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      onClick={() => setRemoving(member)}
+                      className="text-destructive-strong"
+                    >
+                      Remove from event
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}

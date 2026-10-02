@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { useAuth } from "@/features/auth";
 import { resendVerification } from "@/features/auth/api";
@@ -80,11 +81,15 @@ export function VerifyEmailBanner() {
                     onClick={handleResend}
                     disabled={sending || cooldown > 0}
                 >
-                    {cooldown > 0
-                        ? `Sent — resend in ${cooldown}s`
-                        : sending
-                            ? "Sending…"
-                            : "Resend email"}
+                    {cooldown > 0 ? (
+                        `Sent — resend in ${cooldown}s`
+                    ) : sending ? (
+                        <>
+                            Sending <LoadingDots />
+                        </>
+                    ) : (
+                        "Resend email"
+                    )}
                 </Button>
                 <button
                     type="button"

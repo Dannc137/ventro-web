@@ -12,7 +12,18 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           {children}
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              classNames: {
+                toast: "cn-toast rounded-xl border shadow-md",
+                success: "bg-success-tint text-success-strong border-success/30",
+                error: "bg-destructive-tint text-destructive-strong border-destructive/30",
+                warning: "bg-warning-tint text-warning-strong border-warning/30",
+                info: "bg-primary-tint text-primary-strong border-primary/30",
+              },
+            }}
+          />
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
       </QueryClientProvider>

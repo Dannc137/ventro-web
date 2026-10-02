@@ -1,13 +1,15 @@
 import type { EventRole } from "@/features/events/types";
 
 export type MemberView = {
-  memberId: string;
+  memberId: string | null;
   userId: string;
   fullName: string;
   email: string;
   role: EventRole;
-  joinedAt: string;
+  joinedAt: string | null;
   isYou: boolean;
+  pending: boolean;
+  inviteId: string | null;
 };
 
 export type InviteView = {

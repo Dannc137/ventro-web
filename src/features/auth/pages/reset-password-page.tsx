@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { PasswordInput } from "@/components/shared/password-input";
 import { getErrorMessage } from "@/lib/api-client";
 import { AuthLayout } from "../components/auth-layout";
@@ -87,7 +88,13 @@ export function ResetPasswordPage() {
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Saving…" : "Set new password"}
+          {isSubmitting ? (
+            <>
+              Saving <LoadingDots />
+            </>
+          ) : (
+            "Set new password"
+          )}
         </Button>
       </form>
 

@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatLongDate } from "@/lib/format";
 import { can } from "@/lib/permissions";
@@ -107,7 +108,13 @@ export function EventSettingsPage() {
 
           <div className="flex justify-end">
             <Button type="submit" disabled={isSubmitting || !isDirty}>
-              {isSubmitting ? "Saving…" : "Save changes"}
+              {isSubmitting ? (
+                <>
+                  Saving <LoadingDots />
+                </>
+              ) : (
+                "Save changes"
+              )}
             </Button>
           </div>
         </form>

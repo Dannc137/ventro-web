@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
+import { MoneyInput } from "@/components/shared/money-input";
 import {
   Select,
   SelectContent,
@@ -59,6 +61,7 @@ export function AddContributorDialog({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -135,13 +138,11 @@ export function AddContributorDialog({
 
           <div className="space-y-1.5">
             <Label htmlFor="pledged">Amount promised</Label>
-            <Input
+            <MoneyInput
+              control={control}
+              name="pledged"
               id="pledged"
-              type="number"
-              min="0"
-              step="1000"
               aria-invalid={!!errors.pledged}
-              {...register("pledged")}
             />
             {errors.pledged && (
               <p className="text-sm text-destructive-strong">{errors.pledged.message}</p>
@@ -160,7 +161,13 @@ export function AddContributorDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Adding…" : "Add contributor"}
+              {isSubmitting ? (
+                <>
+                  Adding <LoadingDots />
+                </>
+              ) : (
+                "Add contributor"
+              )}
             </Button>
           </DialogFooter>
         </form>

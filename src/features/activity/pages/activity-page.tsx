@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatRelativeTime } from "@/lib/format";
@@ -78,7 +79,13 @@ export function ActivityPage() {
             onClick={() => setLimit((current) => Math.min(current + PAGE_SIZE, MAX))}
             disabled={activity.isFetching}
           >
-            {activity.isFetching ? "Loading…" : "Show more"}
+            {activity.isFetching ? (
+              <>
+                Loading <LoadingDots />
+              </>
+            ) : (
+              "Show more"
+            )}
           </Button>
         </div>
       ) : (

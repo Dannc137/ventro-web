@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormAlert } from "@/components/shared/form-alert";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { PasswordInput } from "@/components/shared/password-input";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
@@ -97,7 +98,13 @@ function NameSection() {
 
         <div className="flex justify-end">
           <Button type="submit" size="sm" disabled={isSubmitting || !isDirty}>
-            {isSubmitting ? "Saving…" : "Save"}
+            {isSubmitting ? (
+              <>
+                Saving <LoadingDots />
+              </>
+            ) : (
+              "Save"
+            )}
           </Button>
         </div>
       </form>
@@ -219,7 +226,13 @@ function PasswordSection() {
 
         <div className="flex justify-end">
           <Button type="submit" size="sm" disabled={isSubmitting}>
-            {isSubmitting ? "Changing…" : "Change password"}
+            {isSubmitting ? (
+              <>
+                Changing <LoadingDots />
+              </>
+            ) : (
+              "Change password"
+            )}
           </Button>
         </div>
       </form>

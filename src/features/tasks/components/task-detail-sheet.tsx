@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/shared/date-picker";
 import {
     Select,
     SelectContent,
@@ -165,13 +166,11 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
 
                     <span className="self-start pt-2 text-muted-foreground">Due</span>
                     <div>
-                        <Input
+                        <DatePicker
                             aria-label="Due date"
-                            type="date"
                             value={task.dueDate}
                             disabled={!canEdit}
-                            onChange={(e) => {
-                                const next = e.target.value;
+                            onChange={(next) => {
                                 if (!next) return;
                                 if (task.dateIsFixed || !event) {
                                     patch({ fixedDate: next });
@@ -179,6 +178,7 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                                     patch({ offsetDays: daysUntil(next) - daysUntil(event.eventDate) });
                                 }
                             }}
+                            size="sm"
                             className="h-8 w-[180px]"
                         />
                         <p className="mt-1 text-xs text-muted-foreground">

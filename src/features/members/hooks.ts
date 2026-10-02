@@ -80,7 +80,11 @@ export function useRevokeInvite(eventId: string) {
 
   return useMutation({
     mutationFn: (inviteId: string) => revokeInvite(eventId, inviteId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.invites(eventId) }),
+    onSuccess: () => {
+      // A revoked invite might be a direct (email) invite, which also shows
+      // up as a dimmed, pending row in the member list.
+      queryClient.invalidateQueries({ queryKey: queryKeys.invites(eventId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.members(eventId) });
+    },
   });
 }

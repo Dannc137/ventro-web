@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PublicLayout } from "@/components/layout/public-layout";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { daysUntil, formatCountdown, formatLongDate } from "@/lib/format";
 import { useAuth } from "@/features/auth";
@@ -150,8 +151,8 @@ export function InvitePage() {
         </div>
 
         {status === "authenticated" ? (
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            {join.isPending ? "Joining…" : "Taking you to the event…"}
+          <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-sm text-muted-foreground">
+            {join.isPending ? "Joining" : "Taking you to the event"} <LoadingDots />
           </p>
         ) : (
           <div className="mt-6 space-y-3">

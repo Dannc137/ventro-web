@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
+import { MoneyInput } from "@/components/shared/money-input";
 import {
   Select,
   SelectContent,
@@ -88,6 +90,7 @@ export function BudgetItemDialog({
   const existingCategories = (budget.data?.categories ?? []).map((group) => group.category);
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -186,33 +189,19 @@ export function BudgetItemDialog({
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-1.5">
               <Label htmlFor="planned">Planned</Label>
-              <Input
-                id="planned"
-                type="number"
-                min="0"
-                step="1000"
-                {...register("planned")}
-              />
+              <MoneyInput control={control} name="planned" id="planned" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="committed">Committed</Label>
-              <Input
-                id="committed"
-                type="number"
-                min="0"
-                step="1000"
-                {...register("committed")}
-              />
+              <MoneyInput control={control} name="committed" id="committed" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="paid">Paid</Label>
-              <Input
+              <MoneyInput
+                control={control}
+                name="paid"
                 id="paid"
-                type="number"
-                min="0"
-                step="1000"
                 aria-invalid={!!errors.paid}
-                {...register("paid")}
               />
             </div>
           </div>
@@ -262,7 +251,15 @@ export function BudgetItemDialog({
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Saving…" : item ? "Save changes" : "Add item"}
+                {isSubmitting ? (
+                  <>
+                    Saving <LoadingDots />
+                  </>
+                ) : item ? (
+                  "Save changes"
+                ) : (
+                  "Add item"
+                )}
               </Button>
             </div>
           </DialogFooter>

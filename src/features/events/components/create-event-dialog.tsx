@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/shared/date-picker";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { useCreateEvent } from "../hooks";
 
@@ -37,6 +39,7 @@ export function CreateEventDialog({ open, onOpenChange }: CreateEventDialogProps
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -90,11 +93,17 @@ export function CreateEventDialog({ open, onOpenChange }: CreateEventDialogProps
 
           <div className="space-y-1.5">
             <Label htmlFor="eventDate">Event date</Label>
-            <Input
-              id="eventDate"
-              type="date"
-              aria-invalid={!!errors.eventDate}
-              {...register("eventDate")}
+            <Controller
+              control={control}
+              name="eventDate"
+              render={({ field }) => (
+                <DatePicker
+                  id="eventDate"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  aria-invalid={!!errors.eventDate}
+                />
+              )}
             />
             {errors.eventDate && (
               <p className="text-sm text-destructive-strong">
@@ -127,7 +136,13 @@ export function CreateEventDialog({ open, onOpenChange }: CreateEventDialogProps
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating…" : "Create event"}
+              {isSubmitting ? (
+                <>
+                  Creating <LoadingDots />
+                </>
+              ) : (
+                "Create event"
+              )}
             </Button>
           </DialogFooter>
         </form>

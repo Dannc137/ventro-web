@@ -11,6 +11,7 @@ import { AuthLayout } from "../components/auth-layout";
 import { loginSchema, type LoginValues } from "../schemas";
 import { PasswordInput } from "@/components/shared/password-input";
 import { FormAlert } from "@/components/shared/form-alert";
+import { LoadingDots } from "@/components/shared/loading-dots";
 // import { useForceLight } from "@/hooks/use-force-light";
 
 export function LoginPage() {
@@ -97,7 +98,13 @@ export function LoginPage() {
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Signing in…" : "Sign in"}
+          {isSubmitting ? (
+            <>
+              Signing in <LoadingDots />
+            </>
+          ) : (
+            "Sign in"
+          )}
         </Button>
       </form>
 

@@ -11,6 +11,8 @@ import { RoleBadge } from "@/components/shared/role-badge";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { PendingInviteCard } from "@/features/invites/components/pending-invite-card";
+import { useMyInvites } from "@/features/invites/hooks";
 import { CreateEventDialog } from "../components/create-event-dialog";
 import { useEvents } from "../hooks";
 import type { EventCard as EventCardType } from "../types";
@@ -19,6 +21,7 @@ type Filter = "upcoming" | "past" | "archived" | "cancelled";
 
 export function EventsPage() {
   const { data: events, isLoading, isError, error } = useEvents();
+  const { data: pendingInvites } = useMyInvites();
 
   const [createOpen, setCreateOpen] = useState(false);
   const [filter, setFilter] = useState<Filter>("upcoming");
@@ -63,6 +66,14 @@ export function EventsPage() {
         </h1>
         <Button onClick={() => setCreateOpen(true)}>New event</Button>
       </div>
+
+      {pendingInvites && pendingInvites.length > 0 && (
+        <div className="mt-6 space-y-3">
+          {pendingInvites.map((invite) => (
+            <PendingInviteCard key={invite.id} invite={invite} />
+          ))}
+        </div>
+      )}
 
       <div className="mt-6 space-y-3 sm:flex sm:flex-wrap sm:items-center sm:gap-3 sm:space-y-0">
         <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>

@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // import { emptyCode } from "@/components/shared/code-input";
 import { FormAlert } from "@/components/shared/form-alert";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { PasswordInput } from "@/components/shared/password-input";
 import { getErrorMessage } from "@/lib/api-client";
 import { useAuth } from "../auth-context";
@@ -137,7 +138,13 @@ export function ChangeEmailDialog({ open, onOpenChange }: ChangeEmailDialogProps
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Sending…" : "Send code"}
+                  {isSubmitting ? (
+                    <>
+                      Sending <LoadingDots />
+                    </>
+                  ) : (
+                    "Send code"
+                  )}
                 </Button>
               </DialogFooter>
             </form>
@@ -163,8 +170,14 @@ export function ChangeEmailDialog({ open, onOpenChange }: ChangeEmailDialogProps
                 autoFocus
               />
 
-              <p className="text-sm text-muted-foreground">
-                {checking ? "Checking…" : "Check the spam folder if it hasn't arrived."}
+              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                {checking ? (
+                  <>
+                    Checking <LoadingDots />
+                  </>
+                ) : (
+                  "Check the spam folder if it hasn't arrived."
+                )}
               </p>
             </div>
 

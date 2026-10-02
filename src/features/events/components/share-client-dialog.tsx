@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { ShareLink } from "@/components/shared/share-link";
 import { getErrorMessage } from "@/lib/api-client";
 import { useDisableSharing, useEnableSharing } from "../hooks";
@@ -99,11 +100,15 @@ export function ShareClientDialog({
             onClick={token ? () => onOpenChange(false) : handleCreate}
             disabled={enableSharing.isPending}
           >
-            {enableSharing.isPending
-              ? "Creating…"
-              : token
-                ? "Done"
-                : "Create link"}
+            {enableSharing.isPending ? (
+              <>
+                Creating <LoadingDots />
+              </>
+            ) : token ? (
+              "Done"
+            ) : (
+              "Create link"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

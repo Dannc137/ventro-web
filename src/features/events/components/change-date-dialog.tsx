@@ -10,8 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/shared/date-picker";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { daysUntil, formatLongDate } from "@/lib/format";
 import { useTasks } from "@/features/tasks/hooks";
@@ -88,12 +89,7 @@ function ChangeDateBody({
       <div className="space-y-5">
         <div className="space-y-1.5">
           <Label htmlFor="eventDate">New date</Label>
-          <Input
-            id="eventDate"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          <DatePicker id="eventDate" value={date} onChange={setDate} />
         </div>
 
         {changed && (
@@ -125,7 +121,13 @@ function ChangeDateBody({
           Cancel
         </Button>
         <Button onClick={handleSave} disabled={!changed || changeDate.isPending}>
-          {changeDate.isPending ? "Saving…" : "Change date"}
+          {changeDate.isPending ? (
+            <>
+              Saving <LoadingDots />
+            </>
+          ) : (
+            "Change date"
+          )}
         </Button>
       </DialogFooter>
     </>

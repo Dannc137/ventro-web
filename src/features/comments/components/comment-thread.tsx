@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatRelativeTime } from "@/lib/format";
@@ -53,7 +54,9 @@ export function CommentThread({ eventId, entityType, entityId, event }: CommentT
             <h3 className="text-[13px] font-semibold">Comments</h3>
 
             {comments.isLoading && (
-                <p className="mt-3 text-sm text-muted-foreground">Loading…</p>
+                <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
+                    Loading <LoadingDots />
+                </p>
             )}
 
             {comments.data?.length === 0 && (
@@ -144,7 +147,13 @@ export function CommentThread({ eventId, entityType, entityId, event }: CommentT
                             onClick={handleSubmit}
                             disabled={!body.trim() || createComment.isPending}
                         >
-                            {createComment.isPending ? "Posting…" : "Comment"}
+                            {createComment.isPending ? (
+                                <>
+                                    Posting <LoadingDots />
+                                </>
+                            ) : (
+                                "Comment"
+                            )}
                         </Button>
                     </div>
                 </div>

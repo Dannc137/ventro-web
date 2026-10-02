@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DatePicker } from "@/components/shared/date-picker";
+import { LoadingDots } from "@/components/shared/loading-dots";
+import { MoneyInput } from "@/components/shared/money-input";
 import {
   Select,
   SelectContent,
@@ -58,6 +61,7 @@ export function RecordPaymentDialog({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -114,13 +118,11 @@ export function RecordPaymentDialog({
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
           <div className="space-y-1.5">
             <Label htmlFor="amount">Amount received</Label>
-            <Input
+            <MoneyInput
+              control={control}
+              name="amount"
               id="amount"
-              type="number"
-              min="0"
-              step="1000"
               aria-invalid={!!errors.amount}
-              {...register("amount")}
             />
             {errors.amount && (
               <p className="text-sm text-destructive-strong">{errors.amount.message}</p>
@@ -130,7 +132,11 @@ export function RecordPaymentDialog({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="paidOn">Date received</Label>
-              <Input id="paidOn" type="date" {...register("paidOn")} />
+              <DatePicker
+                id="paidOn"
+                value={watch("paidOn") ?? ""}
+                onChange={(next) => setValue("paidOn", next, { shouldValidate: true })}
+              />
             </div>
 
             <div className="space-y-1.5">
@@ -165,7 +171,13 @@ export function RecordPaymentDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Recording…" : "Record payment"}
+              {isSubmitting ? (
+                <>
+                  Recording <LoadingDots />
+                </>
+              ) : (
+                "Record payment"
+              )}
             </Button>
           </DialogFooter>
         </form>

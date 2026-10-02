@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CodeInput } from "@/components/shared/code-input";
 import { FormAlert } from "@/components/shared/form-alert";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { AuthLayout } from "../components/auth-layout";
 import { useAuth } from "../auth-context";
@@ -75,8 +76,14 @@ export function VerifyEmailPage() {
         />
 
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm text-muted-foreground">
-            {checking ? "Checking…" : "Didn't get it? Check your spam folder."}
+          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            {checking ? (
+              <>
+                Checking <LoadingDots />
+              </>
+            ) : (
+              "Didn't get it? Check your spam folder."
+            )}
           </p>
           <Button
             variant="outline"

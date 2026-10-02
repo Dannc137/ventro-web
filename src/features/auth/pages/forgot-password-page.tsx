@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { getErrorMessage } from "@/lib/api-client";
 import { AuthLayout } from "../components/auth-layout";
 import { forgotPassword } from "../api";
@@ -150,7 +151,13 @@ export function ForgotPasswordPage() {
         </div>
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Sending…" : "Send reset link"}
+          {isSubmitting ? (
+            <>
+              Sending <LoadingDots />
+            </>
+          ) : (
+            "Send reset link"
+          )}
         </Button>
       </form>
 

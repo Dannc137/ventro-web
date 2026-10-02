@@ -1,5 +1,6 @@
 import { NavLink } from "react-router";
 import { LogOut, Plus } from "lucide-react";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { StatusDot } from "@/components/shared/status-dot";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { formatDate } from "@/lib/format";
@@ -33,7 +34,9 @@ export function Sidebar({ onCreateEvent, onNavigate }: SidebarProps) {
                 </p>
 
                 {isLoading && (
-                    <p className="px-2 py-2 text-sm text-muted-foreground">Loading…</p>
+                    <p className="flex items-center gap-1.5 px-2 py-2 text-sm text-muted-foreground">
+                        Loading <LoadingDots />
+                    </p>
                 )}
 
                 {events?.length === 0 && (

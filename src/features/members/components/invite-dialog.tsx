@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoadingDots } from "@/components/shared/loading-dots";
 import { ShareLink } from "@/components/shared/share-link";
 import { getErrorMessage } from "@/lib/api-client";
 import type { EventRole } from "@/features/events/types";
@@ -164,7 +165,13 @@ export function InviteDialog({
 
               <DialogFooter>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Sending…" : "Send invite"}
+                  {isSubmitting ? (
+                    <>
+                      Sending <LoadingDots />
+                    </>
+                  ) : (
+                    "Send invite"
+                  )}
                 </Button>
               </DialogFooter>
             </form>
@@ -211,7 +218,13 @@ export function InviteDialog({
                 </p>
 
                 <Button onClick={handleCreateLink} disabled={createLink.isPending}>
-                  {createLink.isPending ? "Creating…" : "Create link"}
+                  {createLink.isPending ? (
+                    <>
+                      Creating <LoadingDots />
+                    </>
+                  ) : (
+                    "Create link"
+                  )}
                 </Button>
               </>
             )}
