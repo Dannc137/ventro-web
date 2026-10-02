@@ -11,12 +11,10 @@ import { useTasks } from "@/features/tasks/hooks";
 import { StatCard } from "../components/stat-card";
 import { useDashboard } from "../hooks";
 import { useAuth } from "@/features/auth";
-import { useForceLight } from "@/hooks/use-force-light";
 
 const GRID_COLUMNS = ["", "md:grid-cols-1", "md:grid-cols-2", "md:grid-cols-3"];
 
 export function DashboardPage() {
-    useForceLight();
     const { eventId = "" } = useParams();
     const { user } = useAuth();
 
