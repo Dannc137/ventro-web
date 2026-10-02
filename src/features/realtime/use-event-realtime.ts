@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth";
 import type { CommentBroadcast, CommentView } from "@/features/comments/types";
+import type { MessageBroadcast, MessagePage } from "@/features/chat/types";
+import { emitTyping } from "@/features/chat/typing-bus";
 import type { EventDetail } from "@/features/events/types";
 import { can } from "@/lib/permissions";
 import { queryKeys } from "@/lib/query-keys";
@@ -59,6 +61,63 @@ export function useEventRealtime(eventId: string | undefined) {
         case "comments":
           invalidate(["comments"]);
           break;
+
+        case "typing": {
+          const { userId, userName } = message;
+          if (!userId || !userName) break;
+
+          emitTyping(eventId, { userId, userName });
+          break;
+        }
+
+        case "message-sent": {
+          const m = message.message as MessageBroadcast | undefined;
+          if (!m) break;
+
+          queryClient.setQueryData<InfiniteData<MessagePage>>(
+            queryKeys.chat(eventId),
+            (old) => {
+              if (!old || old.pages.length === 0) return old;
+
+              const [newest, ...rest] = old.pages;
+              if (newest.items.some((item) => item.id === m.id)) return old;
+
+              return {
+                ...old,
+                pages: [
+                  { ...newest, items: [...newest.items, { ...m, mine: m.authorId === user?.id }] },
+                  ...rest,
+                ],
+              };
+            },
+          );
+
+          invalidate(queryKeys.chatUnread(eventId));
+          break;
+        }
+
+        case "message-changed": {
+          const m = message.message as MessageBroadcast | undefined;
+          if (!m) break;
+
+          queryClient.setQueryData<InfiniteData<MessagePage>>(
+            queryKeys.chat(eventId),
+            (old) => {
+              if (!old) return old;
+
+              return {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  items: page.items.map((item) =>
+                    item.id === m.id ? { ...m, mine: m.authorId === user?.id } : item,
+                  ),
+                })),
+              };
+            },
+          );
+          break;
+        }
 
         case "tasks":
           invalidate(queryKeys.tasks(eventId));

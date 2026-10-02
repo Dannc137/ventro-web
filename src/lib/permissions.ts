@@ -13,7 +13,8 @@ export type Permission =
   | "VIEW_MONEY"
   | "EDIT_MONEY"
   | "MANAGE_MEMBERS"
-  | "VIEW_INTERNAL";
+  | "VIEW_INTERNAL"
+  | "VIEW_CHAT";
 
 const WRITE_PERMISSIONS: Permission[] = [
   "EDIT_EVENT",

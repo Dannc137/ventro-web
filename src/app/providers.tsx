@@ -14,7 +14,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           {children}
           <Toaster position="top-right" />
         </AuthProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
       </QueryClientProvider>
     </ThemeProvider>
   );

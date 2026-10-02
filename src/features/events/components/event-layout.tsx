@@ -6,16 +6,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getErrorMessage } from "@/lib/api-client";
 import { formatCountdown, formatLongDate } from "@/lib/format";
 import { can } from "@/lib/permissions";
+import { cn } from "@/lib/utils";
 import { ShareClientDialog } from "./share-client-dialog";
 import { useEvent } from "../hooks";
 import { useEventRealtime } from "@/features/realtime/use-event-realtime";
 import { CancelledBanner } from "./cancelled-banner";
+import { ChatLauncher } from "@/features/chat/components/chat-launcher";
+import { ChatPanel } from "@/features/chat/components/chat-panel";
 
 export function EventLayout() {
   const { eventId = "" } = useParams();
   const { data: event, isLoading, isError, error } = useEvent(eventId);
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   useEventRealtime(eventId);
 
   if (isError) {
@@ -39,7 +43,12 @@ export function EventLayout() {
   }
 
   return (
-    <>
+    <div
+      className={cn(
+        "transition-[padding] duration-200 ease-out motion-reduce:transition-none",
+        chatOpen && "sm:pr-[360px]",
+      )}
+    >
       {event?.status === "CANCELLED" && (
         <div className="mb-6">
           <CancelledBanner event={event} />
@@ -90,6 +99,13 @@ export function EventLayout() {
           onOpenChange={setShareOpen}
         />
       )}
-    </>
+
+      {eventId && (
+        <>
+          <ChatLauncher eventId={eventId} open={chatOpen} onOpen={() => setChatOpen(true)} />
+          <ChatPanel eventId={eventId} open={chatOpen} onOpenChange={setChatOpen} />
+        </>
+      )}
+    </div>
   );
 }

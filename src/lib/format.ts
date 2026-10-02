@@ -52,6 +52,15 @@ export function formatMoney(amount: number | string): string {
   }).format(value);
 }
 
+/** "18:43" — 24-hour clock, for chat bubble timestamps. */
+export function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 /** "2 min ago", "3 hours ago", "yesterday" */
 export function formatRelativeTime(iso: string): string {
   const diffSeconds = Math.round((new Date(iso).getTime() - Date.now()) / 1000);

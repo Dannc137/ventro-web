@@ -7,6 +7,9 @@ export type RealtimeMessage = {
   area: string;
   eventId?: string;
   comment?: unknown;
+  message?: unknown;
+  userId?: string;
+  userName?: string;
 };
 
 type Handler = (message: RealtimeMessage) => void;
@@ -106,6 +109,11 @@ export function subscribe(destination: string, handler: Handler): () => void {
       }, 0);
     }
   };
+}
+
+export function publish(destination: string, body: object): void {
+  if (!client?.connected) return;
+  client.publish({ destination, body: JSON.stringify(body) });
 }
 
 export function disconnectRealtime() {
