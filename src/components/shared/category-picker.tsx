@@ -18,6 +18,7 @@ type CategoryPickerProps = {
   existing: string[];
   starters: string[];
   id?: string;
+  disabled?: boolean;
 };
 
 export function CategoryPicker({
@@ -26,6 +27,7 @@ export function CategoryPicker({
   existing,
   starters,
   id,
+  disabled,
 }: CategoryPickerProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -54,6 +56,7 @@ export function CategoryPicker({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className="w-full justify-between font-normal"
         >
           <span className={cn(!value && "text-muted-foreground")}>

@@ -15,7 +15,7 @@ import { MoneyText } from "@/components/shared/money-text";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { getErrorMessage } from "@/lib/api-client";
-import { formatMoney } from "@/lib/format";
+import { formatDate, formatMoney } from "@/lib/format";
 import { can } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import type { EventDetail } from "@/features/events/types";
@@ -136,7 +136,14 @@ export function BudgetPage() {
                                                 onClick={canEdit ? () => openEdit(item) : undefined}
                                                 className={cn(canEdit && "cursor-pointer")}
                                             >
-                                                <TableCell className="font-medium">{item.label}</TableCell>
+                                                <TableCell className="font-medium">
+                                                    {item.label}
+                                                    {item.dueDate && (
+                                                        <span className="block text-xs font-normal text-muted-foreground">
+                                                            Due {formatDate(item.dueDate)}
+                                                        </span>
+                                                    )}
+                                                </TableCell>
                                                 <TableCell className="text-muted-foreground">
                                                     {item.vendorName ?? "—"}
                                                 </TableCell>
@@ -232,6 +239,7 @@ export function BudgetPage() {
                   </p>
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">
                     {item.vendorName ?? "No vendor"}
+                    {item.dueDate && ` · Due ${formatDate(item.dueDate)}`}
                   </p>
                 </div>
                 <BudgetStatusBadge item={item} />

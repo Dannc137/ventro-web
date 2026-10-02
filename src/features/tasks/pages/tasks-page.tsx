@@ -186,6 +186,7 @@ export function TasksPage() {
 
             <CreateTaskDialog
                 eventId={eventId}
+                event={event}
                 open={createOpen}
                 onOpenChange={setCreateOpen}
             />

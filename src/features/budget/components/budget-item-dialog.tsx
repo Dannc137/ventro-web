@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/shared/date-picker";
 import { LoadingDots } from "@/components/shared/loading-dots";
 import { MoneyInput } from "@/components/shared/money-input";
 import {
@@ -37,9 +39,11 @@ import { useBudget } from "../hooks";
 const STARTER_CATEGORIES = [
   "Venue",
   "Catering",
-  "Media",
-  "Logistics",
   "Decor",
+  "Media",
+  "Attire",
+  "Entertainment",
+  "Logistics",
   "Miscellaneous",
 ];
 
@@ -58,6 +62,8 @@ const schema = z
     committed: amount,
     paid: amount,
     paidById: z.string().optional(),
+    dueDate: z.string().optional(),
+    note: z.string().trim().max(2000, "That's too long").optional(),
   })
   .refine((values) => Number(values.paid) <= Number(values.committed), {
     message: "Paid can't be more than committed",
@@ -109,6 +115,8 @@ export function BudgetItemDialog({
       committed: String(item?.committed ?? 0),
       paid: String(item?.paid ?? 0),
       paidById: item?.paidBy?.id ?? "none",
+      dueDate: item?.dueDate ?? "",
+      note: item?.note ?? "",
     });
   }, [open, item, reset]);
 
@@ -122,6 +130,8 @@ export function BudgetItemDialog({
       paid: Number(values.paid),
       paidById:
         values.paidById && values.paidById !== "none" ? values.paidById : undefined,
+      dueDate: values.dueDate || undefined,
+      note: values.note || undefined,
     };
 
     try {
@@ -176,6 +186,13 @@ export function BudgetItemDialog({
           </div>
 
           <div className="space-y-1.5">
+            <Label htmlFor="vendorName">
+              Vendor <span className="text-muted-foreground">optional</span>
+            </Label>
+            <Input id="vendorName" placeholder="Eko Hotel" {...register("vendorName")} />
+          </div>
+
+          <div className="space-y-1.5">
             <Label htmlFor="category">Category</Label>
             <CategoryPicker
               id="category"
@@ -183,6 +200,17 @@ export function BudgetItemDialog({
               onChange={(next) => setValue("category", next)}
               existing={existingCategories}
               starters={STARTER_CATEGORIES}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="dueDate">
+              Payment due <span className="text-muted-foreground">optional</span>
+            </Label>
+            <DatePicker
+              id="dueDate"
+              value={watch("dueDate") ?? ""}
+              onChange={(next) => setValue("dueDate", next)}
             />
           </div>
 
@@ -231,6 +259,16 @@ export function BudgetItemDialog({
             <p className="text-xs text-muted-foreground">
               Who actually paid the vendor. Used to work out who's owed what.
             </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="note">
+              Note <span className="text-muted-foreground">optional</span>
+            </Label>
+            <Textarea id="note" rows={3} placeholder="Any extra detail worth noting" {...register("note")} />
+            {errors.note && (
+              <p className="text-sm text-destructive-strong">{errors.note.message}</p>
+            )}
           </div>
 
           <DialogFooter className="gap-2 sm:justify-between">

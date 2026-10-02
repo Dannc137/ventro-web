@@ -4,7 +4,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/shared/date-picker";
+import { CategoryPicker } from "@/components/shared/category-picker";
 import {
     Select,
     SelectContent,
@@ -20,9 +22,18 @@ import { daysUntil, formatLongDate } from "@/lib/format";
 import { can } from "@/lib/permissions";
 import type { EventDetail } from "@/features/events/types";
 import { useMembers } from "@/features/members/hooks";
-import { useDeleteTask, useUpdateTask } from "../hooks";
+import { useDeleteTask, useTasks, useUpdateTask } from "../hooks";
 import type { TaskStatus, TaskView } from "../types";
 import { useMarkCommentsRead, useComments } from "@/features/comments/hooks";
+
+const STARTER_CATEGORIES = [
+    "Venue",
+    "Catering",
+    "Media",
+    "Logistics",
+    "Guests",
+    "Admin",
+];
 
 const STATUSES: { value: TaskStatus; label: string }[] = [
     { value: "TODO", label: "To do" },
@@ -66,8 +77,19 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
     const updateTask = useUpdateTask(eventId);
     const deleteTask = useDeleteTask(eventId);
     const members = useMembers(eventId);
+    const tasks = useTasks(eventId);
 
     const [title, setTitle] = useState(task.title);
+    const [description, setDescription] = useState(task.description ?? "");
+
+    const existingCategories = Array.from(
+        new Set(
+            (tasks.data ?? [])
+                .flatMap((bucket) => bucket.tasks)
+                .map((t) => t.category)
+                .filter((category): category is string => Boolean(category)),
+        ),
+    );
 
     const canEdit = can(event, "EDIT_TASKS");
     const daysBeforeEvent = event
@@ -124,6 +146,22 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
             </SheetHeader>
 
             <div className="space-y-5 px-4 pb-6">
+                <Textarea
+                    aria-label="Description"
+                    value={description}
+                    disabled={!canEdit}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onBlur={() => {
+                        const trimmed = description.trim();
+                        if (trimmed !== (task.description ?? "")) {
+                            patch({ description: trimmed });
+                        }
+                    }}
+                    placeholder="Add a description"
+                    rows={3}
+                    className="rounded-md border-0 px-2 py-1 -ml-2 shadow-none placeholder:text-muted-foreground hover:bg-muted focus-visible:bg-card focus-visible:ring-[3px] focus-visible:ring-ring/40"
+                />
+
                 <div className="grid grid-cols-[100px_1fr] items-center gap-y-3 text-[13px]">
                     <span className="text-muted-foreground">Status</span>
                     <Select
@@ -142,6 +180,16 @@ function TaskDetailBody({ task, event, onClose }: TaskDetailBodyProps) {
                             ))}
                         </SelectContent>
                     </Select>
+
+                    <span className="text-muted-foreground">Category</span>
+                    <CategoryPicker
+                        id="category"
+                        value={task.category ?? ""}
+                        onChange={(next) => patch({ category: next })}
+                        existing={existingCategories}
+                        starters={STARTER_CATEGORIES}
+                        disabled={!canEdit}
+                    />
 
                     <span className="text-muted-foreground">Assignee</span>
                     <Select
